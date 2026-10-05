@@ -49,3 +49,18 @@ Stand: Version 1.0.0. ✅ umgesetzt · ➖ bewusst nicht umgesetzt · ⏳ offen
 - ⏳ Referenztests mit den Beispielzyklen aus dem Sensiplan-Übungsheft (lagen nicht vor).
 - ⏳ Abgleich der Regeln mit dem Praxisbuch „Natürlich und sicher“.
 - ⏳ Screenshot-Tests (Roborazzi) für das Zyklusblatt.
+
+## Nächste Schritte (Übergabe an eine Umgebung mit Android SDK und Emulator)
+
+Bisher geprüft: Build, Lint, alle JVM-/Robolectric-Tests (CI grün). **Noch nie auf einem Gerät gesehen.**
+In einer Umgebung mit Emulator zuerst:
+
+1. `./gradlew check assembleDebug` lokal ausführen (muss wie in CI grün sein).
+2. Emulator (API 35, und einmal API 28 wegen minSdk) starten, Debug-APK installieren und durchklicken,
+   dabei Screenshots ansehen: Willkommen → Periodenbeginn → Heute, Tageseintrag, Zyklusblatt (Kurve,
+   Phasenband, Scrollen/Wischen), Kalender, Statistik, Einstellungen, Hell-/Dunkelmodus, große Schrift.
+3. Gerätefunktionen prüfen: Widget anlegen und Schnelleingabe (2 Taps), Erinnerungen (Zeit vorstellen),
+   App-Sperre, Sicherung exportieren/importieren (mit und ohne Passwort), automatische Sicherung,
+   PDF- und CSV-Export.
+4. Gefundene Fehler beheben, dafür möglichst Tests ergänzen (Robolectric/Compose oder Instrumented Tests).
+5. Optional: Screenshot-Tests (Roborazzi) für das Zyklusblatt, damit Darstellungsfehler in CI auffallen.
