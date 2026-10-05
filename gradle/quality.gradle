@@ -1,0 +1,23 @@
+// Shared static analysis setup (ktlint + detekt) for every module.
+// Groovy script plugin so both root build files can apply it.
+subprojects {
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
+    apply plugin: "io.gitlab.arturbosch.detekt"
+
+    ktlint {
+        ignoreFailures = false
+        filter {
+            exclude { it.file.path.contains("/build/") }
+        }
+    }
+
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.file("config/detekt/detekt.yml"))
+        parallel = true
+    }
+
+    tasks.matching { it.name == "check" }.configureEach {
+        dependsOn("ktlintCheck")
+    }
+}
