@@ -1,5 +1,6 @@
 package de.easynfp.app.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -50,6 +51,7 @@ private val MAX = Temperature.MAX.hundredths
  * F-03: number wheel for temperatures in steps of 0.01 °C between 34.00 and 42.00 (F-01),
  * plus stepper buttons as an alternative. No keyboard needed.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TemperatureWheel(
     value: Temperature,

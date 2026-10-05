@@ -1,5 +1,6 @@
 package de.easynfp.app.ui.calendar
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -77,6 +78,7 @@ private const val MONTHS_AFTER_TODAY = 1
 private const val DEFAULT_MONTHS_BACK = 12L
 
 /** F-35: month calendar with bleeding, phase and entered days; tap opens the day. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarScreen(
     navigator: AppNavigator,
