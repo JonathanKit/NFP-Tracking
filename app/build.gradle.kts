@@ -1,5 +1,6 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.variant.HasUnitTestBuilder
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 // The Android app: Compose UI, quick entry, reminders, backup and export.
 plugins {
@@ -89,6 +90,13 @@ android {
 
     packaging {
         resources.excludes += setOf("/META-INF/{AL2.0,LGPL2.1}", "/META-INF/LICENSE*")
+    }
+}
+
+androidComponents {
+    // Unit and UI tests run on the debug variant; the release variant only differs in shrinking.
+    beforeVariants(selector().withBuildType("release")) { variant ->
+        (variant as HasUnitTestBuilder).enableUnitTest = false
     }
 }
 

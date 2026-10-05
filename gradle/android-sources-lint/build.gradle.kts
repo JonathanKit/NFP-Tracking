@@ -22,3 +22,10 @@ afterEvaluate {
         )
     }
 }
+
+// Also check the build scripts of the Android modules.
+extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    kotlinScriptAdditionalPaths {
+        include(fileTree(rootDir) { include("app/*.kts", "data/*.kts", "widget/*.kts") })
+    }
+}
