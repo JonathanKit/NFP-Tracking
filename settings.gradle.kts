@@ -39,6 +39,9 @@ include(":backup")
 val jvmOnly = providers.gradleProperty("easynfp.jvmOnly").orNull == "true"
 if (jvmOnly) {
     rootProject.buildFileName = "build-jvm.gradle.kts"
+    // Runs ktlint and detekt on the Android sources without the Android toolchain.
+    include(":android-sources-lint")
+    project(":android-sources-lint").projectDir = file("gradle/android-sources-lint")
 } else {
     include(":data")
     include(":widget")

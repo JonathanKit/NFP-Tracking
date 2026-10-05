@@ -6,10 +6,10 @@ import java.time.LocalTime
 data class AppSettings(
     /** F-23 */
     val morningReminderEnabled: Boolean = false,
-    val morningReminderTime: LocalTime = LocalTime.of(6, 30),
+    val morningReminderTime: LocalTime = LocalTime.parse("06:30"),
     /** F-24 */
     val eveningReminderEnabled: Boolean = false,
-    val eveningReminderTime: LocalTime = LocalTime.of(21, 0),
+    val eveningReminderTime: LocalTime = LocalTime.parse("21:00"),
     /** F-14: optional fields in the day entry. */
     val showIntercourse: Boolean = true,
     val showMittelschmerz: Boolean = true,

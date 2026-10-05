@@ -93,7 +93,8 @@ data class PhaseColors(
     val today: Color,
 )
 
-private val LightPhaseColors = PhaseColors(
+/** Light phase colors, also used for printing (F-52). */
+val PrintPhaseColors = PhaseColors(
     infertile = Color(0xFFD3EEE7),
     onInfertile = Color(0xFF1F4D47),
     fertile = Color(0xFFFBDDE1),
@@ -129,12 +130,12 @@ private val DarkPhaseColors = PhaseColors(
     today = Color(0x339CD1C8),
 )
 
-val LocalPhaseColors = staticCompositionLocalOf { LightPhaseColors }
+val LocalPhaseColors = staticCompositionLocalOf { PrintPhaseColors }
 
 @Composable
 fun EasyNfpTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors: ColorScheme = if (darkTheme) DarkColors else LightColors
-    CompositionLocalProvider(LocalPhaseColors provides if (darkTheme) DarkPhaseColors else LightPhaseColors) {
+    CompositionLocalProvider(LocalPhaseColors provides if (darkTheme) DarkPhaseColors else PrintPhaseColors) {
         MaterialTheme(colorScheme = colors, typography = Typography(), content = content)
     }
 }

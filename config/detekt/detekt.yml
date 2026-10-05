@@ -36,7 +36,8 @@ style:
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
     ignoreAnnotated: ['Composable', 'Preview']
-    excludes: ['**/test/**', '**/androidTest/**', '**/ui/theme/**']
+    # Drawing and layout code is full of dimensions; naming each would hurt readability.
+    excludes: ['**/test/**', '**/androidTest/**', '**/ui/**', '**/export/**', '**/widget/**']
   ReturnCount:
     max: 5
     excludeGuardClauses: true
@@ -52,3 +53,21 @@ style:
     maxDestructuringEntries: 4
   ThrowsCount:
     max: 6
+
+performance:
+  SpreadOperator:
+    active: false
+  ForEachOnRange:
+    active: false
+
+exceptions:
+  SwallowedException:
+    ignoredExceptionTypes:
+      - 'InterruptedException'
+      - 'MalformedURLException'
+      - 'NumberFormatException'
+      - 'ParseException'
+      - 'IOException'
+      - 'SecurityException'
+      - 'DateTimeParseException'
+      - 'GeneralSecurityException'

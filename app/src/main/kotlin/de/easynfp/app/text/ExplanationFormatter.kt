@@ -62,7 +62,7 @@ class ExplanationFormatter(private val res: Resources) {
         },
     )
 
-    @Suppress("CyclomaticComplexMethod")
+    @Suppress("CyclomaticComplexMethod", "LongMethod")
     fun format(step: ExplanationStep): String = when (step) {
         is ExplanationStep.StartPhase -> startPhase(step)
         is ExplanationStep.StartPhaseEndedByMucus ->

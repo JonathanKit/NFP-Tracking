@@ -12,12 +12,12 @@ import de.easynfp.data.model.DayEntry
 import de.easynfp.data.model.Disturbance
 import de.easynfp.data.model.PredefinedDisturbance
 import de.easynfp.rules.model.Temperature
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 
 /** Single access point to the stored data. All writes are transactional. */
 class NfpRepository(
@@ -38,8 +38,7 @@ class NfpRepository(
 
     val disturbances: Flow<List<Disturbance>> = disturbanceDao.observeAll().map { list -> list.map { it.toModel() } }
 
-    suspend fun getDay(date: LocalDate): DayEntry? =
-        dayDao.get(date)?.toModel(dayDao.disturbanceIds(date).toSet())
+    suspend fun getDay(date: LocalDate): DayEntry? = dayDao.get(date)?.toModel(dayDao.disturbanceIds(date).toSet())
 
     /** F-13: stores (or deletes, if empty) the entry of a day. */
     suspend fun saveDay(entry: DayEntry) {

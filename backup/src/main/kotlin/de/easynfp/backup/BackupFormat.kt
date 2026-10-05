@@ -44,7 +44,9 @@ public object BackupFormat {
     public const val CURRENT_VERSION: Int = 1
 
     public const val FILE_EXTENSION: String = "easynfp"
-    public const val MIME_TYPE: String = "application/json"
+
+    /** Generic type so that document providers do not append ".json" to the file name. */
+    public const val MIME_TYPE: String = "application/octet-stream"
 
     internal val json: Json = Json {
         ignoreUnknownKeys = true

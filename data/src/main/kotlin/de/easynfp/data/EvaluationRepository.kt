@@ -5,6 +5,8 @@ import de.easynfp.data.model.DayEntry
 import de.easynfp.rules.CycleEvaluation
 import de.easynfp.rules.SensiplanEngine
 import de.easynfp.rules.model.CycleBuilder
+import java.time.Clock
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -13,8 +15,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.time.Clock
-import java.time.LocalDate
 
 /** Everything the screens need: stored data plus the current rule evaluation. */
 data class EvaluationSnapshot(

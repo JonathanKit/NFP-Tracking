@@ -14,12 +14,6 @@ import de.easynfp.rules.model.CycleOverrides
 import de.easynfp.rules.model.MucusAppearance
 import de.easynfp.rules.model.MucusSensation
 import de.easynfp.rules.model.Temperature
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
@@ -28,6 +22,12 @@ import java.time.ZoneOffset
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class NfpRepositoryTest {
