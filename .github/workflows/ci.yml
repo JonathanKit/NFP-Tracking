@@ -1,7 +1,10 @@
 name: CI
 
+# Branches get CI through their pull request, so a PR is not built twice (push + pull_request).
 on:
   push:
+    branches: [main]
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -19,6 +22,9 @@ jobs:
     timeout-minutes: 60
     env:
       EASYNFP_VERSION_CODE: ${{ github.run_number }}
+      IS_TAG: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      # The signed release APK is only built for tags v* and manual runs, in the same Gradle call as the checks.
+      WANTS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,8 +35,36 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Prepare release signing
+        id: signing
+        if: env.WANTS_RELEASE == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.EASYNFP_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            if [ "$IS_TAG" = true ]; then
+              echo "::error::No signing key configured (see docs/build-and-release.md). Cannot publish a release."
+              exit 1
+            fi
+            echo "::notice::No signing key configured (see docs/build-and-release.md). Only the debug APK is built."
+            exit 0
+          fi
+          # RUNNER_TEMP is outside the workspace and wiped after the job.
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.keystore"
+          echo "EASYNFP_KEYSTORE_FILE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+          echo "release=true" >> "$GITHUB_OUTPUT"
+          if [ "$IS_TAG" = true ]; then
+            echo "EASYNFP_VERSION_NAME=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          fi
+
       - name: Build, static analysis and tests
-        run: ./gradlew --continue --stacktrace check assembleDebug
+        env:
+          EASYNFP_KEYSTORE_PASSWORD: ${{ env.WANTS_RELEASE == 'true' && secrets.EASYNFP_KEYSTORE_PASSWORD || '' }}
+          EASYNFP_KEY_ALIAS: ${{ env.WANTS_RELEASE == 'true' && secrets.EASYNFP_KEY_ALIAS || '' }}
+          EASYNFP_KEY_PASSWORD: ${{ env.WANTS_RELEASE == 'true' && secrets.EASYNFP_KEY_PASSWORD || '' }}
+        run: >-
+          ./gradlew --continue --stacktrace check assembleDebug
+          ${{ steps.signing.outputs.release == 'true' && 'assembleRelease' || '' }}
 
       - name: Room schema files are committed (N-07)
         if: always()
@@ -42,15 +76,17 @@ jobs:
             exit 1
           fi
 
-      - name: No network permission in the APK (N-01)
+      - name: No network permission in the APKs (N-01)
         run: |
-          APK=$(ls app/build/outputs/apk/debug/*.apk | head -n 1)
           AAPT2=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n 1)/aapt2
-          "$AAPT2" dump permissions "$APK" | tee permissions.txt
-          if grep -q "android.permission.INTERNET" permissions.txt; then
-            echo "::error::The APK requests INTERNET."
-            exit 1
-          fi
+          for APK in app/build/outputs/apk/*/*.apk; do
+            echo "== $APK"
+            "$AAPT2" dump permissions "$APK" | tee permissions.txt
+            if grep -q "android.permission.INTERNET" permissions.txt; then
+              echo "::error::$APK requests INTERNET."
+              exit 1
+            fi
+          done
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
@@ -58,8 +94,16 @@ jobs:
           name: easyNFP-debug-${{ github.run_number }}
           path: app/build/outputs/apk/debug/*.apk
 
+      - name: Upload release APK
+        if: steps.signing.outputs.release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyNFP-release-${{ github.run_number }}
+          path: app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+
       - name: Upload reports
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: reports-${{ github.run_number }}
@@ -68,72 +112,29 @@ jobs:
             **/build/test-results/
           if-no-files-found: ignore
 
-  release:
-    name: Signed release APK
+  # Only this small job (no build, no secrets) may write to the repository.
+  publish:
+    name: Publish GitHub release
     needs: build
-    # Tags v* publish a GitHub release; main and manual runs only upload the APK as artifact.
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')))
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
     permissions:
       contents: write
-    env:
-      EASYNFP_VERSION_CODE: ${{ github.run_number }}
-      KEYSTORE_BASE64: ${{ secrets.EASYNFP_KEYSTORE_BASE64 }}
-      IS_TAG: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - uses: gradle/actions/setup-gradle@v4
-
-      - name: Signing key is required for releases
-        if: env.IS_TAG == 'true' && env.KEYSTORE_BASE64 == ''
-        run: |
-          echo "::error::No signing key configured (see docs/build-and-release.md). Cannot publish a release."
-          exit 1
-
-      - name: Version name from tag
-        if: env.IS_TAG == 'true'
-        run: echo "EASYNFP_VERSION_NAME=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
-
-      - name: Build signed release APK
-        if: env.KEYSTORE_BASE64 != ''
-        env:
-          EASYNFP_KEYSTORE_FILE: release.keystore
-          EASYNFP_KEYSTORE_PASSWORD: ${{ secrets.EASYNFP_KEYSTORE_PASSWORD }}
-          EASYNFP_KEY_ALIAS: ${{ secrets.EASYNFP_KEY_ALIAS }}
-          EASYNFP_KEY_PASSWORD: ${{ secrets.EASYNFP_KEY_PASSWORD }}
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > release.keystore
-          ./gradlew --stacktrace assembleRelease
-          rm release.keystore
-
-      - name: Skip without signing key
-        if: env.KEYSTORE_BASE64 == ''
-        run: echo "::notice::No signing key configured (see docs/build-and-release.md). Only the debug APK is built."
-
-      - name: Upload release APK
-        if: env.KEYSTORE_BASE64 != ''
-        uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: easyNFP-release-${{ github.run_number }}
-          path: app/build/outputs/apk/release/*.apk
+          path: apk
 
       # Fixed asset name, so .../releases/latest/download/easyNFP.apk always points to the newest version.
-      - name: Publish GitHub release
-        if: env.IS_TAG == 'true'
+      - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          VERSION="${GITHUB_REF_NAME#v}"
           mkdir dist
-          cp app/build/outputs/apk/release/app-release.apk dist/easyNFP.apk
+          cp apk/app-release.apk dist/easyNFP.apk
           (cd dist && sha256sum easyNFP.apk > easyNFP.apk.sha256)
           cat > notes.md <<EOF
           **Installation:** \`easyNFP.apk\` unten herunterladen und auf dem Handy öffnen.
@@ -145,4 +146,5 @@ jobs:
 
           EOF
           gh release create "$GITHUB_REF_NAME" dist/easyNFP.apk dist/easyNFP.apk.sha256 \
-            --title "easyNFP $EASYNFP_VERSION_NAME" --notes-file notes.md --generate-notes --verify-tag
+            --repo "$GITHUB_REPOSITORY" --title "easyNFP $VERSION" \
+            --notes-file notes.md --generate-notes --verify-tag

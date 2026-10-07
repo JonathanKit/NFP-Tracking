@@ -52,12 +52,19 @@ Zum Ausprobieren der Oberfläche mit vielen Daten: Einstellungen → Demo-Modus 
 
 ## CI (N-09)
 
-`.github/workflows/ci.yml` läuft bei jedem Push:
+`.github/workflows/ci.yml` läuft bei Pushes auf `main`, bei Tags `v*`, bei Pull Requests und bei
+manuellem Start (Actions → CI → „Run workflow“). Andere Branches laufen über ihren Pull Request, damit
+nichts doppelt gebaut wird.
 
-1. `./gradlew check assembleDebug` – Build, ktlint, detekt, Android Lint, Unit-, Robolectric- und UI-Tests
+1. `./gradlew check assembleDebug` – Build, ktlint, detekt, Android Lint, Unit-, Robolectric- und UI-Tests;
+   bei Tags und manuellem Start im selben Gradle-Aufruf zusätzlich `assembleRelease` (signiert)
 2. Prüfung, dass das Room-Schema eingecheckt ist
-3. Prüfung, dass die APK keine `INTERNET`-Berechtigung anfordert (N-01)
-4. Debug-APK als Artefakt `easyNFP-debug-<Nummer>`
+3. Prüfung, dass keine APK die `INTERNET`-Berechtigung anfordert (N-01)
+4. Debug-APK als Artefakt `easyNFP-debug-<Nummer>`, ggf. Release-APK als `easyNFP-release-<Nummer>`
+5. Nur bei Tags: der kleine Job „Publish GitHub release“ (ohne Build, als einziger mit Schreibrecht)
+   legt das GitHub-Release an
+
+Test- und Lint-Berichte werden nur bei Fehlern als Artefakt `reports-<Nummer>` hochgeladen.
 
 Die Debug-APK hat die App-ID `io.github.jonathankit.easynfp.debug` und ist mit dem eingecheckten Debug-Schlüssel
 (`app/debug.keystore`) signiert, damit neuere Test-Builds über ältere installiert werden können.
@@ -89,9 +96,9 @@ Repository → Settings → Secrets and variables → Actions:
 | `EASYNFP_KEY_ALIAS` | `easynfp` |
 | `EASYNFP_KEY_PASSWORD` | Schlüssel-Passwort |
 
-Bei jedem Push auf `main`, bei Tags `v*` und bei manuellem Start (Actions → CI → „Run workflow“) baut
-der Job „Signed release APK“ die Release-APK (Artefakt `easyNFP-release-<Nummer>`). Der manuelle Start
-eignet sich, um den Release-Build (R8/Minify) vor dem ersten Tag zu prüfen.
+Bei Tags `v*` und bei manuellem Start (Actions → CI → „Run workflow“) baut die CI zusätzlich die
+signierte Release-APK (Artefakt `easyNFP-release-<Nummer>`). Der manuelle Start eignet sich, um den
+Release-Build (R8/Minify) vor einem Tag zu prüfen; ohne Secrets entsteht dabei nur die Debug-APK.
 
 ### Release veröffentlichen
 
@@ -100,7 +107,7 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-Der Tag löst die CI aus. Nach erfolgreichem Build und Tests legt der Release-Job ein GitHub-Release
+Der Tag löst die CI aus. Nach erfolgreichem Build und Tests legt der Job „Publish GitHub release“ ein GitHub-Release
 `easyNFP 1.0.0` an mit:
 
 - `easyNFP.apk` – signierte Release-APK, immer unter diesem festen Namen, damit
