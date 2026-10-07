@@ -5,8 +5,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import de.easynfp.backup.BackupFormat
 import de.easynfp.data.backup.BackupMapper
 import de.easynfp.data.db.NfpDatabase
+import de.easynfp.data.demo.DemoData
 import de.easynfp.data.model.CycleRecord
 import de.easynfp.data.model.DayEntry
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.Intercourse
 import de.easynfp.data.model.PredefinedDisturbance
 import de.easynfp.rules.model.Bleeding
@@ -66,6 +68,11 @@ class NfpRepositoryTest {
             bleeding = Bleeding.SPOTTING,
             intercourse = Intercourse.PROTECTED,
             mittelschmerz = true,
+            otherBleeding = Intensity.LIGHT,
+            cramps = Intensity.HEAVY,
+            nausea = Intensity.MEDIUM,
+            diarrhea = true,
+            vomiting = true,
             note = "Notiz",
             disturbanceIds = setOf(alcohol.id),
         )
@@ -127,6 +134,16 @@ class NfpRepositoryTest {
             CycleRecord(day.minusDays(20), excludedFromStatistics = true, CycleOverrides(mucusPeak = day.minusDays(5))),
         )
         repository.saveDay(DayEntry(day, Temperature(3655), disturbanceIds = setOf(stress.id)))
+        repository.saveDay(
+            DayEntry(
+                day.minusDays(1),
+                mucusSensation = MucusSensation.WET,
+                mucusAppearance = MucusAppearance.LIQUID,
+                cramps = Intensity.LIGHT,
+                vomiting = true,
+            ),
+        )
+        repository.saveDay(DayEntry(day.minusDays(2), diarrhea = true))
         val original = repository.snapshotForBackup()
 
         val bytes = BackupFormat.encode(
@@ -148,6 +165,22 @@ class NfpRepositoryTest {
         repository.deleteAll()
         assertTrue(repository.dayEntries.first().isEmpty())
         assertEquals(PredefinedDisturbance.entries.size, repository.disturbances.first().size)
+    }
+
+    @Test
+    fun `F-48 demo data gives evaluated cycles and a forecast`() = runBlocking {
+        val content = DemoData.generate(day)
+        repository.replaceAll(content)
+        assertEquals(content.days.size, repository.dayEntries.first().size)
+        val snapshot = EvaluationSnapshot.compute(day, repository.cycles.first(), repository.dayEntries.first())
+        assertEquals(DemoData.COMPLETED_CYCLES + 1, snapshot.evaluations.size)
+        assertEquals(DemoData.CURRENT_CYCLE_DAY, snapshot.current?.cycle?.cycleDayOf(day))
+        val evaluated = snapshot.evaluations.count { it.temperatureCompleted != null }
+        assertTrue(evaluated >= DemoData.COMPLETED_CYCLES - 2, "only $evaluated cycles evaluated")
+        assertTrue(snapshot.evaluations.count { it.infertileFromEveningOfDay != null } >= DemoData.COMPLETED_CYCLES - 3)
+        assertTrue(snapshot.forecast != null)
+        // Same date, same data.
+        assertEquals(content, DemoData.generate(day))
     }
 
     @Test

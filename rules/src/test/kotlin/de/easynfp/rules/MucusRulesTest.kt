@@ -59,6 +59,27 @@ class MucusRulesTest {
     }
 
     @Test
+    fun `R-11 finer observation steps map to the same categories`() {
+        val seen = MucusAppearance.NOTHING_SEEN
+        assertEquals(MucusCategory.S_PLUS, MucusCategory.derive(MucusSensation.WET, seen))
+        assertEquals(MucusCategory.S_PLUS, MucusCategory.derive(MucusSensation.WET, null))
+        listOf(MucusAppearance.WHITISH_CLOUDY, MucusAppearance.THICK, MucusAppearance.LUMPY_YELLOWISH).forEach {
+            assertEquals(MucusCategory.S, MucusCategory.derive(MucusSensation.DRY, it), "$it")
+            assertEquals(MucusCategory.S, MucusCategory.derive(null, it), "$it")
+            assertEquals(MucusCategory.S_PLUS, MucusCategory.derive(MucusSensation.WET, it), "$it")
+        }
+        listOf(MucusAppearance.GLASSY, MucusAppearance.CLEAR_STRETCHY, MucusAppearance.LIQUID).forEach {
+            assertEquals(MucusCategory.S_PLUS, MucusCategory.derive(MucusSensation.DRY, it), "$it")
+            assertEquals(MucusCategory.S_PLUS, MucusCategory.derive(null, it), "$it")
+        }
+        // Both scales are ordered from worst to best quality.
+        val bySensation = MucusSensation.entries.map { MucusCategory.derive(it, seen)!! }
+        assertEquals(bySensation.sorted(), bySensation)
+        val byAppearance = MucusAppearance.entries.drop(1).map { MucusCategory.derive(null, it)!! }
+        assertEquals(byAppearance.sorted(), byAppearance)
+    }
+
+    @Test
     fun `R-12 peak is the last day of best quality followed by three lower days`() {
         val result = assertIs<MucusEvaluation.Completed>(evaluate("t t f S S+ S+ f t t"))
         assertEquals(6, result.peakDay)

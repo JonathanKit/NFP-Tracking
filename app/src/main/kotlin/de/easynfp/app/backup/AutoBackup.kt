@@ -38,6 +38,8 @@ object AutoBackupScheduler {
 class AutoBackupWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val container = DataContainer.get(applicationContext)
+        // F-48: never overwrite real backups with demo data.
+        if (container.isDemo) return Result.success()
         val settings = container.settings.current()
         val folderUri = settings.autoBackupFolderUri
         if (!settings.autoBackupEnabled || folderUri == null) return Result.success()

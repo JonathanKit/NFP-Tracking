@@ -1,30 +1,51 @@
 package de.easynfp.rules.model
 
-/** F-05: what the user felt at the vulva during the day. */
-public enum class MucusSensation {
+/**
+ * F-05: what the user felt at the vulva during the day, ordered from worst to best quality.
+ * The finer steps only help recording; the category follows R-11.
+ */
+public enum class MucusSensation(internal val category: MucusCategory) {
     /** trocken */
-    DRY,
+    DRY(MucusCategory.DRY),
 
     /** nichts gefühlt */
-    NOTHING_FELT,
+    NOTHING_FELT(MucusCategory.NOTHING),
 
     /** feucht */
-    MOIST,
+    MOIST(MucusCategory.MOIST),
 
-    /** nass / schlüpfrig */
-    WET_SLIPPERY,
+    /** nass */
+    WET(MucusCategory.S_PLUS),
+
+    /** schlüpfrig, glitschig */
+    WET_SLIPPERY(MucusCategory.S_PLUS),
 }
 
-/** F-05: what the user saw during the day. */
-public enum class MucusAppearance {
+/**
+ * F-05: what the user saw during the day, ordered from worst to best quality.
+ * [category] is null for "nothing seen": then the sensation decides (R-11).
+ */
+public enum class MucusAppearance(internal val category: MucusCategory?) {
     /** nichts gesehen */
-    NOTHING_SEEN,
+    NOTHING_SEEN(null),
 
-    /** dicklich, weißlich, trüb, cremig, klumpig, gelblich */
-    THICK,
+    /** weißlich, trüb */
+    WHITISH_CLOUDY(MucusCategory.S),
 
-    /** glasig, dehnbar, fadenziehend, flüssig */
-    CLEAR_STRETCHY,
+    /** dicklich, cremig */
+    THICK(MucusCategory.S),
+
+    /** klumpig, gelblich */
+    LUMPY_YELLOWISH(MucusCategory.S),
+
+    /** glasig, durchsichtig */
+    GLASSY(MucusCategory.S_PLUS),
+
+    /** dehnbar, fadenziehend */
+    CLEAR_STRETCHY(MucusCategory.S_PLUS),
+
+    /** flüssig, wässrig */
+    LIQUID(MucusCategory.S_PLUS),
 }
 
 /**
@@ -46,21 +67,16 @@ public enum class MucusCategory(public val symbol: String) {
         /**
          * R-11: derives the category of a day from its best observation.
          *
+         * S+ if the sensation is wet/slippery or the appearance glassy, stretchy or liquid; S if the
+         * appearance is whitish, thick or lumpy; otherwise the sensation decides (t, ø, f).
          * Returns null when nothing usable was recorded. A missing sensation combined with
          * "nothing seen" is not enough to decide between t, ø and f, so it yields null as well.
          */
         public fun derive(sensation: MucusSensation?, appearance: MucusAppearance?): MucusCategory? {
-            if (sensation == MucusSensation.WET_SLIPPERY || appearance == MucusAppearance.CLEAR_STRETCHY) {
-                return S_PLUS
-            }
-            if (appearance == MucusAppearance.THICK) return S
-            return when (sensation) {
-                MucusSensation.DRY -> DRY
-                MucusSensation.NOTHING_FELT -> NOTHING
-                MucusSensation.MOIST -> MOIST
-                MucusSensation.WET_SLIPPERY -> S_PLUS
-                null -> null
-            }
+            val fromAppearance = appearance?.category
+            val fromSensation = sensation?.category
+            if (fromAppearance == null) return fromSensation
+            return if (fromSensation != null) maxOf(fromSensation, fromAppearance) else fromAppearance
         }
     }
 }

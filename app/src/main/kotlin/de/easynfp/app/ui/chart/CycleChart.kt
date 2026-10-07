@@ -42,6 +42,8 @@ fun chartLabels(res: Resources): ChartLabels = ChartLabels(
     infertileShort = res.getString(R.string.chart_infertile_short),
     fertileShort = res.getString(R.string.chart_fertile_short),
     coverline = res.getString(R.string.chart_coverline_short),
+    today = res.getString(R.string.chart_today_label),
+    forecast = res.getString(R.string.chart_forecast_label),
 )
 
 fun chartColors(phase: PhaseColors, background: Int, text: Int, textSecondary: Int): ChartColors = ChartColors(
@@ -63,6 +65,10 @@ fun chartColors(phase: PhaseColors, background: Int, text: Int, textSecondary: I
     grid = phase.grid.toArgb(),
     gridStrong = phase.gridStrong.toArgb(),
     today = phase.today.toArgb(),
+    todayOutline = phase.todayOutline.toArgb(),
+    onTodayOutline = background,
+    infertileColumn = phase.infertileColumn.toArgb(),
+    firstHigherColumn = phase.firstHigherColumn.toArgb(),
 )
 
 /**
@@ -128,6 +134,7 @@ fun CycleChart(
                         detectTapGestures { offset ->
                             renderer.columnAt(model, offset.x)?.let { index ->
                                 val column = model.columns[index]
+                                // Forecast days are in the future and cannot be entered yet.
                                 if (column.phase != null) onDayClick(column.date)
                             }
                         }
@@ -140,4 +147,4 @@ fun CycleChart(
 }
 
 private const val SCROLL_WAIT_MILLIS = 1_000L
-private const val VIEWPORT_TODAY_POSITION = 0.8f
+private const val VIEWPORT_TODAY_POSITION = 0.65f

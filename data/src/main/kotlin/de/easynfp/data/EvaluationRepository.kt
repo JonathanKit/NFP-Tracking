@@ -5,6 +5,8 @@ import de.easynfp.data.model.DayEntry
 import de.easynfp.rules.CycleEvaluation
 import de.easynfp.rules.SensiplanEngine
 import de.easynfp.rules.model.CycleBuilder
+import de.easynfp.rules.statistics.CycleForecast
+import de.easynfp.rules.statistics.CycleForecaster
 import java.time.Clock
 import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,11 @@ data class EvaluationSnapshot(
         cycles.firstOrNull { it.startDate == evaluation.cycle.startDate }
 
     val hasCycles: Boolean get() = evaluations.isNotEmpty()
+
+    /** F-47: forecast of the coming days, from cycles that count for the statistics (F-46). */
+    val forecast: CycleForecast? by lazy {
+        CycleForecaster.forecast(evaluations, today, { recordFor(it)?.excludedFromStatistics != true })
+    }
 
     companion object {
         fun compute(today: LocalDate, cycles: List<CycleRecord>, entries: List<DayEntry>): EvaluationSnapshot {

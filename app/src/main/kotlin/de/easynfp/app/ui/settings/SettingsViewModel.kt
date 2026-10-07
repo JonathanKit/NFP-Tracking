@@ -5,10 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.easynfp.app.AppRestart
 import de.easynfp.app.backup.BackupManager
 import de.easynfp.app.export.CsvExporter
 import de.easynfp.backup.BackupError
 import de.easynfp.data.DataContainer
+import de.easynfp.data.demo.DemoMode
 import de.easynfp.data.settings.AppSettings
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -124,6 +126,14 @@ class SettingsViewModel(
     fun exportCsv(uri: Uri) = work {
         val ok = CsvExporter.export(application, uri)
         messageChannel.send(if (ok) SettingsMessage.CsvExported else SettingsMessage.Failed(null))
+    }
+
+    /** F-48: demo data lives in its own database; switching restarts the app. */
+    val isDemo: Boolean = container.isDemo
+
+    fun setDemoMode(enabled: Boolean) = work {
+        if (enabled) DemoMode.enable(application) else DemoMode.disable(application)
+        AppRestart.restart(application)
     }
 
     /** F-55 */

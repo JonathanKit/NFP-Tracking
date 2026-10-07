@@ -50,11 +50,23 @@ Damit ist N-06 erfüllt: die Oberfläche kennt keine Regeln, das Regelwerk kennt
 Manuelle Dependency Injection über `DataContainer` (ein Objekt pro Prozess, auch vom Widget genutzt).
 ViewModels werden über `appViewModelFactory` erzeugt. Kein DI-Framework, damit der Build einfach bleibt.
 
+**Demo-Modus (F-48):** `DemoMode` speichert ein Flag in eigenen SharedPreferences. `DataContainer` liest es
+beim Start und öffnet dann `easynfp-demo.db` statt `easynfp.db`. Umschalten erzeugt bzw. löscht die
+Demo-Datenbank (`DemoData`, deterministisch aus dem Datum) und startet den Prozess neu (`AppRestart`).
+Die echte Datenbank wird dabei nie geöffnet oder verändert; die automatische Sicherung ruht.
+
+**Prognose (F-47):** `EvaluationSnapshot.forecast` ruft `CycleForecaster` (`:rules`, Statistik) auf.
+Die Oberfläche stellt sie nur dar (Zyklusblatt, Kalender), die PDF-Ausgabe enthält sie nicht.
+
 ## Zyklusblatt
 
 `CycleChartRenderer` zeichnet auf `android.graphics.Canvas`. Derselbe Code liefert die Kurve auf dem
 Bildschirm (über `drawIntoCanvas`) und im PDF-Export (F-52). Das Modell (`ChartModel`) ist reine
 Datenaufbereitung und wird separat getestet.
+
+Aufbau von oben nach unten: Datum, Zyklustag, Phasenband, Kurve (Hinterlegung unfruchtbarer Tage und der
+Spalte der 1. höheren Messung, höhere Messungen eingekreist), Zeilen für Periode, Schleim, Höhepunkt,
+Störung, GV. Der heutige Tag ist kräftig umrandet; Prognosetage (F-47) liegen rechts einer gestrichelten Linie.
 
 ## Tests
 

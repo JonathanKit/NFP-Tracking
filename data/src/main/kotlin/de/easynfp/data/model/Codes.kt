@@ -28,6 +28,7 @@ object Codes {
             MucusSensation.NOTHING_FELT to "NOTHING_FELT",
             MucusSensation.MOIST to "MOIST",
             MucusSensation.WET_SLIPPERY to "WET_SLIPPERY",
+            MucusSensation.WET to "WET",
         ),
     )
     val appearance = CodeMap(
@@ -35,6 +36,17 @@ object Codes {
             MucusAppearance.NOTHING_SEEN to "NOTHING_SEEN",
             MucusAppearance.THICK to "THICK",
             MucusAppearance.CLEAR_STRETCHY to "CLEAR_STRETCHY",
+            MucusAppearance.WHITISH_CLOUDY to "WHITISH_CLOUDY",
+            MucusAppearance.LUMPY_YELLOWISH to "LUMPY_YELLOWISH",
+            MucusAppearance.GLASSY to "GLASSY",
+            MucusAppearance.LIQUID to "LIQUID",
+        ),
+    )
+    val intensity = CodeMap(
+        mapOf(
+            Intensity.LIGHT to "LIGHT",
+            Intensity.MEDIUM to "MEDIUM",
+            Intensity.HEAVY to "HEAVY",
         ),
     )
     val bleeding = CodeMap(

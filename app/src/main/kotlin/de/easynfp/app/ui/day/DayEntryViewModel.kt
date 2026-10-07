@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import de.easynfp.data.DataContainer
 import de.easynfp.data.model.DayEntry
 import de.easynfp.data.model.Disturbance
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.Intercourse
 import de.easynfp.rules.NewCycleSuggestion
 import de.easynfp.rules.model.Bleeding
@@ -71,6 +72,17 @@ interface DayEntryActions {
     fun setMittelschmerz(value: Boolean)
 
     fun setBreastSymptom(value: Boolean)
+
+    /** F-16 */
+    fun setOtherBleeding(value: Intensity?)
+
+    fun setCramps(value: Intensity?)
+
+    fun setNausea(value: Intensity?)
+
+    fun setDiarrhea(value: Boolean)
+
+    fun setVomiting(value: Boolean)
 
     fun setNote(value: String)
 
@@ -156,6 +168,16 @@ class DayEntryViewModel(
     override fun setMittelschmerz(value: Boolean) = edit { it.copy(mittelschmerz = value) }
 
     override fun setBreastSymptom(value: Boolean) = edit { it.copy(breastSymptom = value) }
+
+    override fun setOtherBleeding(value: Intensity?) = edit { it.copy(otherBleeding = value) }
+
+    override fun setCramps(value: Intensity?) = edit { it.copy(cramps = value) }
+
+    override fun setNausea(value: Intensity?) = edit { it.copy(nausea = value) }
+
+    override fun setDiarrhea(value: Boolean) = edit { it.copy(diarrhea = value) }
+
+    override fun setVomiting(value: Boolean) = edit { it.copy(vomiting = value) }
 
     override fun setNote(value: String) = edit { it.copy(note = value) }
 

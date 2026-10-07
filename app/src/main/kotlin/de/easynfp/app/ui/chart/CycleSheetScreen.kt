@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PictureAsPdf
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -135,8 +136,8 @@ private fun CyclePage(
     val evaluation = snapshot.evaluations[index]
     val context = LocalContext.current
     val formatter = remember(context) { ExplanationFormatter(context.resources) }
-    val model = remember(evaluation, snapshot.entries, settings.showIntercourse) {
-        ChartModel.build(evaluation, snapshot.entries, snapshot.today, settings.showIntercourse)
+    val model = remember(evaluation, snapshot, settings.showIntercourse) {
+        ChartModel.build(evaluation, snapshot.entries, snapshot.today, settings.showIntercourse, snapshot.forecast)
     }
     val record = snapshot.recordFor(evaluation)
     val scope = rememberCoroutineScope()
@@ -167,11 +168,6 @@ private fun CyclePage(
             modifier = Modifier.padding(end = 8.dp),
         )
         Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(
-                stringResource(R.string.chart_legend),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
             ExplanationCard(formatter, evaluation)
             OverrideCard(evaluation, viewModel)
             SectionCard(title = stringResource(R.string.chart_options)) {
@@ -206,6 +202,7 @@ private fun CycleHeader(
 ) {
     val resources = LocalContext.current.resources
     val cycle = evaluation.cycle
+    var showLegend by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -240,10 +237,41 @@ private fun CycleHeader(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            // F-47: forecast of the cycle end, only for the current cycle.
+            val forecast = snapshot.forecast
+            if (end == null && forecast != null) {
+                Text(
+                    stringResource(
+                        R.string.chart_forecast_next_period,
+                        Formats.dateShort(resources, forecast.nextPeriodStart),
+                        forecast.basedOnCycles,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        // The legend is needed rarely, so it is behind a small "i" (F-30).
+        IconButton(onClick = { showLegend = true }) {
+            Icon(Icons.Outlined.Info, stringResource(R.string.chart_legend_show))
         }
         IconButton(onClick = onNext, enabled = index < snapshot.evaluations.lastIndex) {
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, stringResource(R.string.next_cycle))
         }
+    }
+    if (showLegend) {
+        AlertDialog(
+            onDismissRequest = { showLegend = false },
+            title = { Text(stringResource(R.string.chart_legend_title)) },
+            text = {
+                Text(
+                    stringResource(R.string.chart_legend),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            },
+            confirmButton = { TextButton(onClick = { showLegend = false }) { Text(stringResource(R.string.ok)) } },
+        )
     }
 }
 

@@ -97,11 +97,28 @@
     <string name="sensation_dry">trocken</string>
     <string name="sensation_nothing">nichts gefühlt</string>
     <string name="sensation_moist">feucht</string>
-    <string name="sensation_wet">nass / schlüpfrig</string>
+    <string name="sensation_wet">nass</string>
+    <string name="sensation_slippery">schlüpfrig, glitschig</string>
     <string name="appearance_nothing">nichts gesehen</string>
-    <string name="appearance_thick">dicklich, weißlich, trüb, cremig, klumpig, gelblich</string>
-    <string name="appearance_clear">glasig, dehnbar, fadenziehend, flüssig</string>
-    <string name="section_bleeding">Blutung</string>
+    <string name="appearance_whitish">weißlich, trüb</string>
+    <string name="appearance_thick">dicklich, cremig</string>
+    <string name="appearance_lumpy">klumpig, gelblich</string>
+    <string name="appearance_glassy">glasig, durchsichtig</string>
+    <string name="appearance_clear">dehnbar, fadenziehend</string>
+    <string name="appearance_liquid">flüssig, wässrig</string>
+    <string name="mucus_scale_hint">Die Stufen sind nach Qualität geordnet, von schlechter zu besser.</string>
+    <string name="section_bleeding">Periode</string>
+    <string name="section_symptoms">Blutung und Symptome</string>
+    <string name="other_bleeding">Blutung</string>
+    <string name="other_bleeding_hint">Außerhalb der Periode, z. B. Zwischenblutung. Zählt nicht für die Auswertung.</string>
+    <string name="symptom_cramps">Krämpfe</string>
+    <string name="symptom_nausea">Übelkeit</string>
+    <string name="symptom_diarrhea">Durchfall</string>
+    <string name="symptom_vomiting">Erbrechen</string>
+    <string name="intensity_none">nicht</string>
+    <string name="intensity_light">leicht</string>
+    <string name="intensity_medium">mittel</string>
+    <string name="intensity_heavy">stark</string>
     <string name="bleeding_spotting">Schmierblutung</string>
     <string name="bleeding_light">leicht</string>
     <string name="bleeding_medium">mittel</string>
@@ -163,7 +180,7 @@
     <string name="chart_row_phase">Phase</string>
     <string name="chart_row_date">Datum</string>
     <string name="chart_row_cycle_day">Zyklustag</string>
-    <string name="chart_row_bleeding">Blutung</string>
+    <string name="chart_row_bleeding">Periode</string>
     <string name="chart_row_mucus">Schleim</string>
     <string name="chart_row_peak">Höhepunkt</string>
     <string name="chart_row_disturbance">Störung</string>
@@ -171,7 +188,12 @@
     <string name="chart_infertile_short">U</string>
     <string name="chart_fertile_short">F</string>
     <string name="chart_coverline_short">HL</string>
-    <string name="chart_legend">Phase: U = unfruchtbar, F mit Schraffur = fruchtbar, ☾ = ab abends unfruchtbar. HL = Hilfslinie. Werte in Klammern sind ausgeklammert und nicht verbunden. Kleine Zahlen 1–6 unter Punkten: Referenzwerte; Zahlen über Punkten: höhere Messungen (durchgestrichen = zählt nicht). H 1 2 3 = Schleimhöhepunkt und Folgetage. Blutung: Kreisgröße nach Stärke, offener Kreis = Schmierblutung. Tippe auf einen Tag, um ihn zu bearbeiten.</string>
+    <string name="chart_legend_title">Legende</string>
+    <string name="chart_legend_show">Legende anzeigen</string>
+    <string name="chart_legend">• Phase: U = unfruchtbar, F mit Schraffur = fruchtbar, ☾ = ab abends unfruchtbar. Unfruchtbare Tage sind zusätzlich über die ganze Höhe dezent hinterlegt.\n• Heute: kräftig umrandete Spalte.\n• Prognose: Tage nach heute mit „?“ und blasser Farbe (U? / F?). Sie ist nur eine Schätzung aus den bisherigen Zyklen und keine Auswertung nach dem Regelwerk. Gestrichelter Kreis in der Zeile Periode = erwartete Periode.\n• HL = Hilfslinie.\n• Kleine Zahlen 1–6 unter Punkten: Referenzwerte.\n• Eingekreiste Punkte mit Zahl darüber: höhere Messungen (durchgestrichen = zählt nicht). Die Spalte der 1. höheren Messung ist farbig hinterlegt.\n• Werte in Klammern sind ausgeklammert und nicht verbunden.\n• H 1 2 3 = Schleimhöhepunkt und Folgetage.\n• Periode: Kreisgröße nach Stärke, offener Kreis = Schmierblutung.\n• Tippe auf einen Tag, um ihn zu bearbeiten.</string>
+    <string name="chart_today_label">Heute</string>
+    <string name="chart_forecast_label">Prognose</string>
+    <string name="chart_forecast_next_period">Prognose: nächste Periode um den %1$s (geschätzt aus %2$d Zyklen)</string>
     <string name="chart_options">Optionen</string>
     <string name="exclude_from_statistics">Von der Statistik ausschließen</string>
     <string name="exclude_from_statistics_hint">Zum Beispiel bei Krankheit. Die Auswertung nach dem Regelwerk bleibt unverändert.</string>
@@ -239,7 +261,9 @@
     <string name="explain_fertile_until_both">Fruchtbar, bis Temperatur und Schleim ausgewertet sind. Noch offen: %1$s.</string>
 
     <!-- Calendar -->
-    <string name="calendar_legend">U = unfruchtbar, F mit Schraffur = fruchtbar. Roter Punkt = Blutung (klein: Schmierblutung), grauer Punkt = Eintrag vorhanden, fette Zahl = Periodenbeginn. Tippe auf einen Tag, um ihn zu bearbeiten.</string>
+    <string name="calendar_legend">U = unfruchtbar, F mit Schraffur = fruchtbar. Roter Punkt = Periode (klein: Schmierblutung), grauer Punkt = Eintrag vorhanden, fette Zahl = Periodenbeginn. Tippe auf einen Tag, um ihn zu bearbeiten.\nPrognose: Tage nach heute sind blass und mit „?“ markiert (U? / F?), roter Ring = erwartete Periode. Die Prognose ist nur eine Schätzung aus den bisherigen Zyklen, keine Auswertung.</string>
+    <string name="phase_forecast_suffix">(Prognose)</string>
+    <string name="forecast_expected_period">Periode erwartet</string>
 
     <!-- Statistics -->
     <string name="range_last_6">Letzte 6</string>
@@ -320,6 +344,15 @@
         <item quantity="one">täglich</item>
         <item quantity="other">%d Tage</item>
     </plurals>
+    <string name="settings_demo">Demo-Modus</string>
+    <string name="demo_mode">Demo-Modus</string>
+    <string name="demo_mode_hint">Zeigt die App mit vielen erfundenen Zyklen, zum Ausprobieren. Deine echten Daten bleiben unverändert und sind nach dem Ausschalten wieder da. Die App startet dabei neu.</string>
+    <string name="demo_mode_enable_title">Demo-Modus einschalten?</string>
+    <string name="demo_mode_enable_text">easyNFP startet neu und zeigt erfundene Daten. Was du im Demo-Modus einträgst, wird beim Ausschalten verworfen. Automatische Sicherungen laufen im Demo-Modus nicht.</string>
+    <string name="demo_mode_disable_title">Demo-Modus beenden?</string>
+    <string name="demo_mode_disable_text">easyNFP startet neu und zeigt wieder deine echten Daten. Die Demo-Daten werden gelöscht.</string>
+    <string name="demo_mode_confirm">Neu starten</string>
+    <string name="demo_banner">Demo-Modus · erfundene Daten</string>
     <string name="delete_all">Alle Daten löschen</string>
     <string name="delete_all_first">Alle Einträge, Zyklen, Störfaktoren und Einstellungen werden gelöscht. Erstelle vorher eine Sicherung, wenn du die Daten behalten möchtest.</string>
     <string name="delete_all_continue">Weiter</string>
@@ -358,6 +391,11 @@
         <item>Geschlechtsverkehr</item>
         <item>Mittelschmerz</item>
         <item>Brustsymptom</item>
+        <item>Blutung außerhalb der Periode</item>
+        <item>Krämpfe</item>
+        <item>Übelkeit</item>
+        <item>Durchfall</item>
+        <item>Erbrechen</item>
         <item>Notiz</item>
     </string-array>
 </resources>

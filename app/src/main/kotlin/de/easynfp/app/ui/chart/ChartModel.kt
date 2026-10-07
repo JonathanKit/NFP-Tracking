@@ -8,6 +8,7 @@ import de.easynfp.rules.model.Bleeding
 import de.easynfp.rules.model.MucusCategory
 import de.easynfp.rules.model.Temperature
 import de.easynfp.rules.mucus.MucusEvaluation
+import de.easynfp.rules.statistics.CycleForecast
 import java.time.LocalDate
 
 /** One day column of the cycle sheet (F-30, F-31). */
@@ -22,7 +23,7 @@ data class ChartColumn(
     val bleeding: Bleeding?,
     val hasDisturbance: Boolean,
     val intercourse: Intercourse?,
-    /** Null for days in the future. */
+    /** Evaluated status; null for days in the future. */
     val phase: DayPhase?,
     val isToday: Boolean,
     /** 1–6 for the six reference values of the first higher measurement (R-03). */
@@ -32,13 +33,21 @@ data class ChartColumn(
     val higherCounts: Boolean = true,
     /** "H" for the mucus peak and "1", "2", "3" for the following days (R-12, R-13). */
     val peakMarker: String? = null,
-)
+    /** F-47: forecast status of a future day; never set for today or the past. */
+    val forecastPhase: DayPhase? = null,
+    /** F-47: a period is expected on this future day. */
+    val expectedPeriod: Boolean = false,
+) {
+    val isForecast: Boolean get() = forecastPhase != null
+}
 
 data class ChartModel(
     val columns: List<ChartColumn>,
     val coverline: Temperature?,
     val coverlineFromDay: Int?,
     val coverlineToDay: Int?,
+    /** Cycle day of the (possible) first higher measurement, highlighted as a column. */
+    val firstHigherDay: Int?,
     /** Plot range in hundredths, multiples of 5. */
     val yMin: Int,
     val yMax: Int,
@@ -54,14 +63,21 @@ data class ChartModel(
         /** Minimum number of columns shown for the current cycle, like a printed chart. */
         const val MIN_COLUMNS_CURRENT = 28
 
+        /**
+         * @param forecast F-47: if given, the future days of the current cycle show the forecast and the
+         *   current cycle is drawn up to its forecast end.
+         */
         fun build(
             evaluation: CycleEvaluation,
             entries: Map<LocalDate, DayEntry>,
             today: LocalDate,
             showIntercourse: Boolean,
+            forecast: CycleForecast? = null,
         ): ChartModel {
             val cycle = evaluation.cycle
-            val columnCount = cycle.length ?: maxOf(evaluation.dayCount, MIN_COLUMNS_CURRENT)
+            val currentForecast = forecast?.takeIf { cycle.endDate == null }
+            val forecastLength = currentForecast?.currentCycleLength(cycle.startDate) ?: 0
+            val columnCount = cycle.length ?: maxOf(evaluation.dayCount, MIN_COLUMNS_CURRENT, forecastLength)
             val shift = evaluation.temperature.shift
             val references = shift?.referenceDays.orEmpty()
             val higher = shift?.measurements.orEmpty().associateBy { it.cycleDay }
@@ -71,6 +87,7 @@ data class ChartModel(
                 val date = cycle.dateOf(day)
                 val entry = entries[date]
                 val measurement = higher[day]
+                val forecastDay = currentForecast?.dayOn(date)
                 ChartColumn(
                     cycleDay = day,
                     date = date,
@@ -87,6 +104,8 @@ data class ChartModel(
                     higherNumber = measurement?.number,
                     higherCounts = measurement?.counts ?: true,
                     peakMarker = peakMarkers[day],
+                    forecastPhase = forecastDay?.let { DayPhase(day, it.phase, it.infertileFromEvening) },
+                    expectedPeriod = forecastDay?.expectedPeriod == true,
                 )
             }
 
@@ -109,6 +128,7 @@ data class ChartModel(
                 coverline = shift?.coverline,
                 coverlineFromDay = references.firstOrNull(),
                 coverlineToDay = lastMeasurement,
+                firstHigherDay = shift?.firstHigherDay,
                 yMin = yMin,
                 yMax = yMax,
                 showIntercourse = showIntercourse,

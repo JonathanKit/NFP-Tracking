@@ -41,7 +41,7 @@ public object BackupFormat {
     public const val APP_ID: String = "easyNFP"
 
     /** Increase together with a migration in [BackupMigrations]. */
-    public const val CURRENT_VERSION: Int = 1
+    public const val CURRENT_VERSION: Int = 2
 
     public const val FILE_EXTENSION: String = "easynfp"
 
@@ -113,7 +113,11 @@ public object BackupFormat {
 /** Upgrades the JSON of older backup format versions step by step to [BackupFormat.CURRENT_VERSION]. */
 internal object BackupMigrations {
     /** Migration from version `key` to `key + 1`. Add an entry for every format change. */
-    private val steps: Map<Int, (JsonObject) -> JsonObject> = emptyMap()
+    private val steps: Map<Int, (JsonObject) -> JsonObject> = mapOf(
+        // Version 2 only adds optional symptom fields and finer mucus codes. Older app versions must
+        // refuse such files ("update the app") instead of failing on the unknown codes.
+        1 to { it },
+    )
 
     fun migrate(content: JsonObject, fromVersion: Int): JsonObject {
         var current = content

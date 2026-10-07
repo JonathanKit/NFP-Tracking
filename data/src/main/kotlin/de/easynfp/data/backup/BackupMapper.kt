@@ -49,6 +49,11 @@ object BackupMapper {
                     breastSymptom = day.breastSymptom,
                     note = day.note,
                     disturbanceIds = day.disturbanceIds.sorted(),
+                    otherBleeding = day.otherBleeding?.let(Codes.intensity::code),
+                    cramps = day.cramps?.let(Codes.intensity::code),
+                    nausea = day.nausea?.let(Codes.intensity::code),
+                    diarrhea = day.diarrhea,
+                    vomiting = day.vomiting,
                 )
             },
             disturbances = content.disturbances.map { disturbance ->
@@ -78,6 +83,11 @@ object BackupMapper {
                     intercourse = day.intercourse?.let { Codes.intercourse.require(it) },
                     mittelschmerz = day.mittelschmerz,
                     breastSymptom = day.breastSymptom,
+                    otherBleeding = day.otherBleeding?.let { Codes.intensity.require(it) },
+                    cramps = day.cramps?.let { Codes.intensity.require(it) },
+                    nausea = day.nausea?.let { Codes.intensity.require(it) },
+                    diarrhea = day.diarrhea,
+                    vomiting = day.vomiting,
                     note = day.note,
                     disturbanceIds = day.disturbanceIds.toSet(),
                 )

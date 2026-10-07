@@ -2,6 +2,7 @@ package de.easynfp.data.db
 
 import androidx.room.TypeConverter
 import de.easynfp.data.model.Codes
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.Intercourse
 import de.easynfp.rules.model.Bleeding
 import de.easynfp.rules.model.MucusAppearance
@@ -47,6 +48,12 @@ class Converters {
 
     @TypeConverter
     fun toIntercourse(value: String?): Intercourse? = value?.let(Codes.intercourse::valueOf)
+
+    @TypeConverter
+    fun fromIntensity(value: Intensity?): String? = value?.let(Codes.intensity::code)
+
+    @TypeConverter
+    fun toIntensity(value: String?): Intensity? = value?.let(Codes.intensity::valueOf)
 
     companion object {
         val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")

@@ -3,6 +3,7 @@ package de.easynfp.app.text
 import android.content.res.Resources
 import de.easynfp.app.R
 import de.easynfp.data.model.Disturbance
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.PredefinedDisturbance
 import de.easynfp.rules.model.Bleeding
 import de.easynfp.rules.model.MucusAppearance
@@ -53,15 +54,30 @@ object Formats {
             MucusSensation.DRY -> R.string.sensation_dry
             MucusSensation.NOTHING_FELT -> R.string.sensation_nothing
             MucusSensation.MOIST -> R.string.sensation_moist
-            MucusSensation.WET_SLIPPERY -> R.string.sensation_wet
+            MucusSensation.WET -> R.string.sensation_wet
+            MucusSensation.WET_SLIPPERY -> R.string.sensation_slippery
         },
     )
 
     fun appearance(resources: Resources, value: MucusAppearance): String = resources.getString(
         when (value) {
             MucusAppearance.NOTHING_SEEN -> R.string.appearance_nothing
+            MucusAppearance.WHITISH_CLOUDY -> R.string.appearance_whitish
             MucusAppearance.THICK -> R.string.appearance_thick
+            MucusAppearance.LUMPY_YELLOWISH -> R.string.appearance_lumpy
+            MucusAppearance.GLASSY -> R.string.appearance_glassy
             MucusAppearance.CLEAR_STRETCHY -> R.string.appearance_clear
+            MucusAppearance.LIQUID -> R.string.appearance_liquid
+        },
+    )
+
+    /** F-16 */
+    fun intensity(resources: Resources, value: Intensity?): String = resources.getString(
+        when (value) {
+            null -> R.string.intensity_none
+            Intensity.LIGHT -> R.string.intensity_light
+            Intensity.MEDIUM -> R.string.intensity_medium
+            Intensity.HEAVY -> R.string.intensity_heavy
         },
     )
 

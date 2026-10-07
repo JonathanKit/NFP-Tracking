@@ -35,9 +35,9 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 | F-02 | Messzeit wird automatisch mit der aktuellen Uhrzeit vorbelegt und ist änderbar | M |
 | F-03 | Eingabe über ein Zahlenrad oder Stepper, vorbelegt mit dem Wert des Vortags; keine Tastatur nötig | M |
 | F-04 | Temperatur pro Tag ausklammern (Schalter). Der Wert bleibt gespeichert und sichtbar, geht aber nicht in die Auswertung ein | M |
-| F-05 | Zervixschleim getrennt erfassen: Empfinden (trocken, nichts gefühlt, feucht, nass/schlüpfrig) und Aussehen (nichts gesehen, dicklich/weißlich/trüb/cremig/klumpig/gelblich, glasig/dehnbar/fadenziehend/flüssig) | M |
+| F-05 | Zervixschleim getrennt erfassen, in nach Qualität geordneten Stufen: Empfinden (trocken, nichts gefühlt, feucht, nass, schlüpfrig/glitschig) und Aussehen (nichts gesehen, weißlich/trüb, dicklich/cremig, klumpig/gelblich, glasig/durchsichtig, dehnbar/fadenziehend, flüssig/wässrig) | M |
 | F-06 | Die App leitet aus F-05 die Kategorie t, ø, f, S oder S+ ab und zeigt sie an; maßgeblich ist die beste Beobachtung des Tages | M |
-| F-07 | Blutung erfassen: Stärke (Schmierblutung, leicht, mittel, stark) | M |
+| F-07 | Periode erfassen (Abschnitt „Periode“): Stärke (Schmierblutung, leicht, mittel, stark) | M |
 | F-08 | Zyklusbeginn markieren („Neue Periode beginnt heute“). Die App schlägt das beim ersten Blutungstag nach einer Hochlage vor, setzt es aber nie ohne Bestätigung | M |
 | F-09 | Störfaktoren pro Tag aus einer Liste zuordnen, Mehrfachauswahl; eigene Störfaktoren anlegen, umbenennen, archivieren | M |
 | F-10 | Vorbelegte Störfaktoren: wenig oder schlecht geschlafen, spät ins Bett, Alkohol, Krankheit/Fieber, Stress, Reise/Zeitumstellung, abweichende Messzeit, Medikamente, anderes Thermometer | M |
@@ -46,14 +46,15 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 | F-13 | Jeder Tag, auch rückwirkend, ist bearbeitbar; die Auswertung rechnet danach neu | M |
 | F-14 | Geschlechtsverkehr (geschützt/ungeschützt), Mittelschmerz, Brustsymptom als optionale Felder, in den Einstellungen abschaltbar | S |
 | F-15 | Muttermund (Lage, Öffnung, Festigkeit) als Alternative zum Zervixschleim | K |
+| F-16 | Abschnitt „Blutung und Symptome“: Blutung außerhalb der Periode, Krämpfe und Übelkeit jeweils nicht/leicht/mittel/stark; Durchfall und Erbrechen jeweils ja/nein. Gehen nicht in die Auswertung ein | M |
 
 ### 2.2 Schnelleingabe am Morgen
 
 | ID | Anforderung | Prio |
 | --- | --- | --- |
-| F-20 | Homescreen-Widget zeigt Zyklustag und den heutigen Status; ein Tap öffnet direkt die Temperatureingabe, Speichern schließt sie wieder | M |
+| F-20 | Homescreen-Widget zeigt Zyklustag und den heutigen Status; ein Tap aufs Widget öffnet die App, ein Tap auf „Temperatur eintragen“ direkt die Temperatureingabe, Speichern schließt sie wieder | M |
 | F-21 | Die Schnelleingabe speichert Wert und Uhrzeit des Speicherns in höchstens zwei Taps, wenn der Wert nahe am Vortag liegt | M |
-| F-22 | Dunkle Darstellung mit niedriger Helligkeit in der Schnelleingabe, unabhängig vom Systemmodus | M |
+| F-22 | Dunkle Darstellung in der Schnelleingabe, unabhängig vom Systemmodus. Die Bildschirmhelligkeit wird nicht verändert (weder heller noch dunkler) | M |
 | F-23 | Tägliche Erinnerung zu einer einstellbaren Uhrzeit; Tap führt in die Schnelleingabe; entfällt, wenn schon eingetragen | S |
 | F-24 | Abend-Erinnerung für Zervixschleim, abschaltbar | S |
 
@@ -61,9 +62,9 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 
 | ID | Anforderung | Prio |
 | --- | --- | --- |
-| F-30 | Zyklusblatt je Zyklus: Temperaturkurve über Zyklustagen, darunter Zeilen für Blutung, Schleimkategorie, Störfaktoren | M |
-| F-31 | In der Kurve sichtbar: ausgeklammerte Werte (eingeklammert, nicht verbunden), die sechs Referenzwerte, Hilfslinie, höhere Messungen, Schleimhöhepunkt mit den Folgetagen 1–2–3 | M |
-| F-32 | Phasen als Farbband: unfruchtbar am Zyklusanfang, fruchtbar, unfruchtbar nach dem Eisprung | M |
+| F-30 | Zyklusblatt je Zyklus: ganz oben Datum und Zyklustag, darunter Phasenband und Temperaturkurve (Kurvenbereich 30 % höher als in Version 1.0), darunter Zeilen für Periode, Schleimkategorie, Höhepunkt, Störfaktoren. Die Legende öffnet sich über ein kleines „i“ | M |
+| F-31 | In der Kurve sichtbar: ausgeklammerte Werte (eingeklammert, nicht verbunden), die sechs Referenzwerte, Hilfslinie, höhere Messungen (die ersten drei – bei Ausnahmeregeln auch die vierte – eingekreist), die Spalte der 1. höheren Messung farbig hinterlegt, Schleimhöhepunkt mit den Folgetagen 1–2–3 | M |
+| F-32 | Phasen als Farbband: unfruchtbar am Zyklusanfang, fruchtbar, unfruchtbar nach dem Eisprung; unfruchtbare Tage zusätzlich dezent über die ganze Kurvenhöhe hinterlegt | M |
 | F-33 | Tap auf einen Tag in der Kurve öffnet den Tageseintrag | M |
 | F-34 | Wischen wechselt zwischen Zyklen; horizontal scrollbar bei langen Zyklen | M |
 | F-35 | Monatskalender mit Blutung, Phasenfarbe und Markierung für eingetragene Tage; Tap öffnet den Tag | M |
@@ -81,6 +82,8 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 | F-44 | Diagramme: Zykluslängen und Tag der ersten höheren Messung über die Zeit | S |
 | F-45 | Prognose der nächsten Periode als Zeitspanne aus den bisherigen Zyklen, klar als Schätzung beschriftet und nie als Fruchtbarkeitsaussage | S |
 | F-46 | Zyklen von der Statistik ausschließen (zum Beispiel krank, nicht auswertbar) | S |
+| F-47 | Prognose im Zyklusblatt und im Kalender: fruchtbare und unfruchtbare Tage sowie Zyklusende/nächste Periode für die kommenden Tage, aus den letzten Zyklen geschätzt. Auf ausdrücklichen Wunsch der Nutzerin, entgegen Abschnitt 5 („bewusst nicht empfohlen“). Prognosetage sind blass und mit „?“ markiert, der heutige Tag ist deutlich hervorgehoben, damit Prognose und Auswertung nicht verwechselt werden. Die Auswertung nach Abschnitt 3 bleibt davon unberührt | S |
+| F-48 | Demo-Modus in den Einstellungen: erfundene Daten (14 Zyklen) in einer eigenen Datenbank zum Ausprobieren der Oberfläche; echte Daten bleiben unverändert, automatische Sicherung ruht, deutlicher Hinweis „Demo-Modus“ auf jedem Bildschirm | S |
 
 ### 2.5 Daten
 
@@ -159,7 +162,7 @@ Maßgeblich ist die gelieferte Übersicht zum NFP-Regelwerk nach Sensiplan. Umse
 | N-04 | Übersicht: untere Navigation mit vier Zielen (Heute, Zyklusblatt, Kalender, Statistik); Einstellungen über ein Symbol |
 | N-05 | Barrierefreiheit: Phasen nie nur über Farbe, sondern auch über Muster oder Text; Schriftgröße folgt dem System; Hell- und Dunkelmodus |
 | N-06 | Architektur: getrennte Module für Regelwerk, Datenhaltung, Oberfläche und Widget. Die Oberfläche kennt keine Regeln, das Regelwerk kennt keine Datenbank |
-| N-07 | Datenmodell: versioniertes Schema mit getesteten Migrationen; kein Update darf Daten verlieren. Sicherungsdateien tragen eine Formatversion und bleiben importierbar |
+| N-07 | Datenmodell: versioniertes Schema mit getesteten Migrationen; kein Update darf Daten verlieren (keine destruktiven Migrationen, Kopie der alten Datenbank vor jeder Migration, gleicher Signaturschlüssel, Android fragt beim Deinstallieren, ob die Daten behalten werden sollen). Sicherungsdateien tragen eine Formatversion und bleiben importierbar |
 | N-08 | Tests: Unit-Tests für das gesamte Regelwerk (Ziel 100 % der Regel-IDs), Migrationstests, UI-Tests für die Schnelleingabe und den Tageseintrag |
 | N-09 | Qualitätssicherung: CI baut bei jedem Commit, führt Tests und Lint aus und liefert eine installierbare APK |
 | N-10 | Android-Version: mindestens Android 9 (API 28), Ziel ist die jeweils aktuelle API |
@@ -180,7 +183,7 @@ Maßgeblich ist die gelieferte Übersicht zum NFP-Regelwerk nach Sensiplan. Umse
 | PDF des Zyklusblatts | Arzttermin oder NFP-Beratung | F-52 |
 | Prognose der nächsten Periode | Planung im Alltag; strikt getrennt von der Fruchtbarkeitsaussage | F-45 |
 
-Bewusst nicht empfohlen: Eisprung-Vorhersage in die Zukunft, „sichere Tage“ im Voraus, Stimmungs- und Symptomtagebuch mit vielen Feldern, Gamification, Cloud-Konto.
+Bewusst nicht empfohlen (Ausnahme auf Wunsch der Nutzerin: F-47, klar als Prognose gekennzeichnet): Eisprung-Vorhersage in die Zukunft, „sichere Tage“ im Voraus, Stimmungs- und Symptomtagebuch mit vielen Feldern, Gamification, Cloud-Konto.
 
 Für später denkbar: Kinderwunsch-Modus, Partner-Ansicht nur lesend, Bluetooth-Thermometer, iOS.
 
@@ -200,6 +203,9 @@ Details: `docs/architecture.md`.
 - Minus-20-Regel: **nicht anbieten** (R-35 nicht umgesetzt).
 - Praxisbuch „Natürlich und sicher“: **liegt nicht vor** – R-16 umgesetzt wie vorgeschlagen; Abgleich steht aus.
 - Name und Farbwelt: **easyNFP**, simpel und modern.
+- Prognose fruchtbar/unfruchtbar und Zyklus (Oktober 2026): **gewünscht**, obwohl sie dem Regelwerk widerspricht →
+  F-47, strikt getrennt von der Auswertung und deutlich als Prognose gekennzeichnet.
+- Feedback nach dem ersten Gerätetest (Oktober 2026): F-05, F-07, F-16, F-20, F-22, F-30 – F-32, F-47, F-48, N-07 angepasst.
 
 ## Quellen
 

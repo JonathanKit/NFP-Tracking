@@ -91,6 +91,12 @@ data class PhaseColors(
     val grid: Color,
     val gridStrong: Color,
     val today: Color,
+    /** Border of the today column, so evaluated days and the forecast are not confused (F-47). */
+    val todayOutline: Color,
+    /** Subtle background of infertile days over the whole chart height. */
+    val infertileColumn: Color,
+    /** Background of the column of the first higher measurement. */
+    val firstHigherColumn: Color,
 )
 
 /** Light phase colors, also used for printing (F-52). */
@@ -110,6 +116,9 @@ val PrintPhaseColors = PhaseColors(
     grid = Color(0xFFE3E8E6),
     gridStrong = Color(0xFFC8D1CE),
     today = Color(0x332F6F68),
+    todayOutline = Color(0xFF2F6F68),
+    infertileColumn = Color(0x80D3EEE7),
+    firstHigherColumn = Color(0x2E9C4555),
 )
 
 private val DarkPhaseColors = PhaseColors(
@@ -128,6 +137,9 @@ private val DarkPhaseColors = PhaseColors(
     grid = Color(0xFF232828),
     gridStrong = Color(0xFF3A4140),
     today = Color(0x339CD1C8),
+    todayOutline = Color(0xFF9CD1C8),
+    infertileColumn = Color(0x801E3D38),
+    firstHigherColumn = Color(0x33FFB2BE),
 )
 
 val LocalPhaseColors = staticCompositionLocalOf { PrintPhaseColors }

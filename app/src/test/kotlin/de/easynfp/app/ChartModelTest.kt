@@ -1,6 +1,7 @@
 package de.easynfp.app
 
 import de.easynfp.app.ui.chart.ChartModel
+import de.easynfp.rules.Phase
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -42,5 +43,32 @@ class ChartModelTest {
         assertEquals(28, model.columns.size)
         assertTrue(model.columns[9].isToday)
         assertNull(model.columns[10].phase)
+        assertTrue(model.columns.none { it.isForecast })
+    }
+
+    @Test
+    fun `F-31 first higher measurement column is marked`() {
+        val snapshot = TestData.snapshot()
+        val model = ChartModel.build(snapshot.evaluations[1], snapshot.entries, snapshot.today, showIntercourse = false)
+        assertEquals(15, model.firstHigherDay)
+    }
+
+    @Test
+    fun `F-47 forecast fills only future days of the current cycle`() {
+        val snapshot = TestData.snapshot(currentDay = 10)
+        val forecast = snapshot.forecast
+        val current = ChartModel.build(
+            snapshot.evaluations.last(),
+            snapshot.entries,
+            snapshot.today,
+            showIntercourse = false,
+            forecast = forecast,
+        )
+        assertTrue(current.columns.take(10).none { it.isForecast })
+        assertTrue(current.columns.drop(10).all { it.isForecast && it.phase == null })
+        assertEquals(Phase.INFERTILE_END, current.columns[19].forecastPhase?.phase)
+        // Completed cycles never show a forecast.
+        val past = ChartModel.build(snapshot.evaluations[0], snapshot.entries, snapshot.today, false, forecast)
+        assertTrue(past.columns.none { it.isForecast })
     }
 }

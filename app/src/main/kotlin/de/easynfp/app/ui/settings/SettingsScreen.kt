@@ -7,6 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -122,6 +124,7 @@ fun SettingsScreen(
             ReminderSettings(current, viewModel)
             LockSettings(current, viewModel, context as? FragmentActivity)
             BackupSettings(current, viewModel)
+            DemoSettings(viewModel)
             SectionCard(title = stringResource(R.string.settings_info)) {
                 LinkRow(stringResource(R.string.hints_title)) { navigator.openInfo("hints") }
                 LinkRow(stringResource(R.string.about_title)) { navigator.openInfo("about") }
@@ -377,9 +380,11 @@ private fun BackupSettings(settings: AppSettings, viewModel: SettingsViewModel) 
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun <T> ChipRow(options: List<T>, selected: T, label: @Composable (T) -> String, onSelect: (T) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // Wraps instead of squeezing the last chip on narrow screens.
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { option ->
             FilterChip(selected = option == selected, onClick = { onSelect(option) }, label = { Text(label(option)) })
         }
@@ -453,6 +458,33 @@ private fun PasswordField(value: String, onValueChange: (String) -> Unit, label:
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
     )
+}
+
+/** F-48: demo mode with generated data; the real data stays untouched. */
+@Composable
+private fun DemoSettings(viewModel: SettingsViewModel) {
+    var confirm by rememberSaveable { mutableStateOf(false) }
+    val enabled = viewModel.isDemo
+    SectionCard(title = stringResource(R.string.settings_demo)) {
+        SwitchRow(
+            title = stringResource(R.string.demo_mode),
+            subtitle = stringResource(R.string.demo_mode_hint),
+            checked = enabled,
+            onCheckedChange = { confirm = true },
+        )
+    }
+    if (confirm) {
+        ConfirmDialog(
+            title = stringResource(if (enabled) R.string.demo_mode_disable_title else R.string.demo_mode_enable_title),
+            text = stringResource(if (enabled) R.string.demo_mode_disable_text else R.string.demo_mode_enable_text),
+            confirmLabel = stringResource(R.string.demo_mode_confirm),
+            onConfirm = {
+                confirm = false
+                viewModel.setDemoMode(!enabled)
+            },
+            onDismiss = { confirm = false },
+        )
+    }
 }
 
 /** F-55: delete everything, with two confirmations. */

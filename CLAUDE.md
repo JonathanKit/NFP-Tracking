@@ -8,6 +8,12 @@
 - Datenbankänderung: Version erhöhen, Migration + Test, Schema-JSON committen (`docs/data-model.md`).
 - Sicherungsformat: nur kompatibel erweitern oder Formatversion + Migration (`backup/`).
 - Keine Netzwerk-Berechtigung, keine Analyse-/Absturzdienste hinzufügen.
+- Prognose (F-47) ist kein Regelwerk: sie liegt in `rules/.../statistics/CycleForecast.kt`, ändert keine
+  Auswertung und wird in der Oberfläche immer als Prognose („?“, blass) vom heutigen Tag getrennt gezeigt.
+- Daten müssen jedes Update überstehen (N-07): nie `fallbackToDestructiveMigration`, Codes in `Codes.kt` nie ändern.
+  Auf Geräten mit echten Daten nie `adb uninstall`, nur `adb install -r`.
+- Neue Tagesfelder: Entity + Migration, `DayEntry`, Mapper, `BackupDay`/`BackupMapper`, CSV-Spalte
+  (`csv_header`), `DemoData` falls sinnvoll.
 
 ## Prüfen
 
@@ -19,3 +25,14 @@
 
 In Umgebungen ohne Zugriff auf Google Maven (`dl.google.com`) lassen sich die Android-Module nicht
 kompilieren; dann die CI (GitHub Actions) als Prüfung nutzen.
+
+Lokaler Windows-Rechner (Einrichtung: `docs/build-and-release.md`): JDK 21 unter
+`%LOCALAPPDATA%\Programs\Java\jdk-21*`, Android SDK unter `%LOCALAPPDATA%\Android\Sdk`. In Git Bash vor
+Gradle `export JAVA_HOME="$LOCALAPPDATA/Programs/Java/jdk-21.0.12.1+1"` (System-Java ist 8). Für `adb shell`
+mit Gerätepfaden `MSYS_NO_PATHCONV=1` setzen, sonst macht Git Bash aus `/sdcard/...` einen Windows-Pfad.
+
+## Auf dem Gerät prüfen
+
+Testgerät per USB: Sony Xperia 5 II (Android 12, 1080 × 2520). `adb install -r …/app-debug.apk`,
+Screenshots mit `adb exec-out screencap -p > s.png`, Bedienung mit `adb shell input tap/swipe` und
+`uiautomator dump` (Koordinaten aus `bounds`). Mit vielen Daten: Einstellungen → Demo-Modus.

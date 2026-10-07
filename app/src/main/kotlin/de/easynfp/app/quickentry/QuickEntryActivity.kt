@@ -56,8 +56,7 @@ class QuickEntryActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // F-22: low brightness for a dark bedroom.
-        window.attributes = window.attributes.apply { screenBrightness = SCREEN_BRIGHTNESS }
+        // F-22: dark colors only. The screen brightness is left as the user set it (never raised or lowered).
         val lockEnabled = DataContainer.get(this).settings.settings
         setContent {
             QuickEntryTheme {
@@ -72,10 +71,6 @@ class QuickEntryActivity : FragmentActivity() {
                 }
             }
         }
-    }
-
-    private companion object {
-        const val SCREEN_BRIGHTNESS = 0.15f
     }
 }
 

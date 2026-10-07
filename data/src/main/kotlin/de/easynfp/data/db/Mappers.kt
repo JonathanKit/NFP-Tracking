@@ -18,6 +18,11 @@ internal fun DayEntryEntity.toModel(disturbanceIds: Set<Long>): DayEntry = DayEn
     intercourse = intercourse,
     mittelschmerz = mittelschmerz,
     breastSymptom = breastSymptom,
+    otherBleeding = otherBleeding,
+    cramps = cramps,
+    nausea = nausea,
+    diarrhea = diarrhea,
+    vomiting = vomiting,
     note = note,
     disturbanceIds = disturbanceIds,
 )
@@ -35,6 +40,11 @@ internal fun DayEntry.toEntity(updatedAt: Long): DayEntryEntity = DayEntryEntity
     breastSymptom = breastSymptom,
     note = note?.takeIf { it.isNotBlank() },
     updatedAt = updatedAt,
+    otherBleeding = otherBleeding,
+    cramps = cramps,
+    nausea = nausea,
+    diarrhea = diarrhea,
+    vomiting = vomiting,
 )
 
 internal fun CycleEntity.toModel(): CycleRecord = CycleRecord(

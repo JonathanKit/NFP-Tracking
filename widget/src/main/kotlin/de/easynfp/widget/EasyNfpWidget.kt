@@ -38,9 +38,10 @@ data class WidgetState(
     val phase: Phase? = null,
     val infertileFromEvening: Boolean = false,
     val temperatureToday: Temperature? = null,
+    val demo: Boolean = false,
 )
 
-/** F-20: cycle day and today's status; a tap opens the quick temperature entry. */
+/** F-20: cycle day and today's status; a tap opens the app, the temperature line the quick entry. */
 class EasyNfpWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -63,6 +64,7 @@ class EasyNfpWidget : GlanceAppWidget() {
             phase = phase?.phase,
             infertileFromEvening = phase?.infertileFromEvening == true,
             temperatureToday = snapshot.entries[snapshot.today]?.temperature,
+            demo = container.isDemo,
         )
     }
 
@@ -80,28 +82,33 @@ class EasyNfpWidget : GlanceAppWidget() {
 @Composable
 private fun WidgetContent(state: WidgetState) {
     val context = LocalContext.current
-    val intent = Intent(EasyNfpWidget.ACTION_QUICK_ENTRY)
+    val quickEntry = Intent(EasyNfpWidget.ACTION_QUICK_ENTRY)
         .setPackage(context.packageName)
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    // A tap on the widget opens the app; the temperature line opens the quick entry (F-20, F-21).
+    val app = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        ?: quickEntry
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
             .cornerRadius(16.dp)
             .background(GlanceTheme.colors.widgetBackground)
             .padding(horizontal = 14.dp, vertical = 10.dp)
-            .clickable(actionStartActivity(intent)),
+            .clickable(actionStartActivity(app)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val secondary = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 13.sp)
         val primary = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 16.sp, fontWeight = FontWeight.Bold)
         if (!state.locked) {
             val cycleDay = state.cycleDay
+            val dayText = if (cycleDay != null) {
+                context.getString(R.string.widget_cycle_day, cycleDay)
+            } else {
+                context.getString(R.string.widget_no_cycle)
+            }
             Text(
-                text = if (cycleDay != null) {
-                    context.getString(R.string.widget_cycle_day, cycleDay)
-                } else {
-                    context.getString(R.string.widget_no_cycle)
-                },
+                text = if (state.demo) "$dayText · ${context.getString(R.string.widget_demo)}" else dayText,
                 style = secondary,
             )
             statusText(context, state)?.let { Text(text = it, style = primary, maxLines = 2) }
@@ -115,6 +122,11 @@ private fun WidgetContent(state: WidgetState) {
                 context.getString(R.string.widget_enter_temperature)
             },
             style = TextStyle(color = GlanceTheme.colors.primary, fontSize = 14.sp, fontWeight = FontWeight.Medium),
+            modifier = GlanceModifier
+                .cornerRadius(12.dp)
+                .background(GlanceTheme.colors.secondaryContainer)
+                .padding(horizontal = 10.dp, vertical = 6.dp)
+                .clickable(actionStartActivity(quickEntry)),
         )
     }
 }

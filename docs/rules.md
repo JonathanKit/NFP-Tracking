@@ -10,7 +10,8 @@ Grundsätze:
   Ausgabe ist ein `CycleEvaluation`-Objekt mit Phasen, Markierungen und Begründungsschritten.
 - Die Auswertung ist zustandslos und deterministisch. Sie läuft nach jeder Datenänderung neu (F-40, F-13).
 - **Im Zweifel fruchtbar.** Unklare Fälle werden nicht ausgewertet; die Begründung sagt, warum.
-- Keine eigenen Heuristiken oder Vorhersagen in der Auswertung.
+- Keine eigenen Heuristiken oder Vorhersagen in der Auswertung. Die gewünschte Prognose (F-47) steht
+  getrennt davon unter „Weitere Ableitungen“ und beeinflusst keine Auswertung.
 
 ## Temperatur
 
@@ -32,7 +33,7 @@ Endet ein Zyklus, bevor genügend Messungen vorliegen, ist die Temperatur „nic
 | ID | Umsetzung | Code | Tests |
 | --- | --- | --- | --- |
 | R-10 | `MucusCategory` ist in Rangfolge t < ø < f < S < S+ deklariert; Vergleich über die Enum-Reihenfolge. | `model/Mucus.kt` | `R-10 …` |
-| R-11 | `MucusCategory.derive()`: S+ bei nass/schlüpfrig oder glasig/dehnbar/…; S bei dicklich/…; sonst nach Empfinden (t, ø, f). Fehlendes Aussehen = nichts gesehen. Nur „nichts gesehen“ ohne Empfinden ergibt keine Kategorie. | `model/Mucus.kt` | `R-11 …` |
+| R-11 | `MucusCategory.derive()`: S+ bei nass oder schlüpfrig/glitschig oder Aussehen glasig, dehnbar/fadenziehend, flüssig; S bei weißlich/trüb, dicklich/cremig, klumpig/gelblich; sonst nach Empfinden (t, ø, f). Die bessere Beobachtung zählt. Fehlendes Aussehen = nichts gesehen. Nur „nichts gesehen“ ohne Empfinden ergibt keine Kategorie. Die feineren Stufen (F-05) dienen nur der Erfassung; jede Stufe gehört fest zu einer Kategorie (`MucusSensation.category`, `MucusAppearance.category`). | `model/Mucus.kt` | `R-11 …` |
 | R-12 | Tag für Tag: Kandidat ist der letzte Tag mit der bisher besten Qualität (mindestens f). Höhepunkt, wenn die drei Kalendertage danach eingetragen und schlechter sind. | `mucus/MucusEvaluator.kt` | `R-12 …` |
 | R-13 | Abgeschlossen am Abend des 3. Tages nach dem Höhepunkt. | ebd. | `R-13 …` |
 | R-14 | Gleiche (oder bessere) Qualität innerhalb der Zählung 1–2–3 → Zählung beginnt neu, wird in der Begründung vermerkt. | ebd. | `R-14 …` |
@@ -82,6 +83,18 @@ Für einen Zyklus können die 1. höhere Messung und der Schleimhöhepunkt geset
 - **Statistik (F-43):** nur abgeschlossene Zyklen; Mittel, Minimum, Maximum, Standardabweichung (Population).
 - **Prognose (F-45):** Spanne aus kürzestem und längstem der letzten 6 abgeschlossenen Zyklen
   (mindestens 3). Ausdrücklich keine Fruchtbarkeitsaussage.
+- **Prognose der kommenden Tage (F-47, `statistics/CycleForecast.kt`):** auf ausdrücklichen Wunsch der
+  Nutzerin, **keine Regel und kein Teil der Auswertung** – sie ändert keine `CycleEvaluation`.
+  Grundlage sind die letzten 6 abgeschlossenen Zyklen, die für die Statistik zählen (F-46), mindestens einer:
+  - Zykluslänge = gerundeter Mittelwert; ist er schon überschritten, beginnt der nächste Zyklus morgen.
+  - Periodentage = gerundeter Mittelwert der Blutungstage ab Tag 1.
+  - Unfruchtbar nach dem Eisprung ab dem Abend des *spätesten* bisherigen Tages (vorsichtig).
+    Ist der laufende Zyklus schon ausgewertet, gilt R-21 bis zum Zyklusende. Ist dieser Tag schon vorbei,
+    ohne dass ausgewertet wurde, bleiben die restlichen Tage fruchtbar (im Zweifel fruchtbar).
+  - Anfangsphase künftiger Zyklen mit R-30 bis R-33 unter der Annahme, dass der laufende Zyklus wie die
+    bisherigen ausgewertet wird; Schleim wird nicht vorhergesagt.
+  - Die Oberfläche zeigt Prognosetage immer blass und mit „?“ und hebt den heutigen Tag hervor.
+  - Tests: `StatisticsTest` (`F-47 …`), `ChartModelTest`.
 
 ## Referenztests
 

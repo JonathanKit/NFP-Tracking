@@ -74,7 +74,9 @@ class CalendarViewModel(container: DataContainer) : ViewModel() {
 }
 
 private const val MONTHS_BEFORE_FIRST_ENTRY = 1
-private const val MONTHS_AFTER_TODAY = 1
+
+// F-47: the forecast reaches about four months ahead.
+private const val MONTHS_AFTER_TODAY = 3
 private const val DEFAULT_MONTHS_BACK = 12L
 
 /** F-35: month calendar with bleeding, phase and entered days; tap opens the day. */
@@ -205,37 +207,57 @@ private fun MonthGrid(month: YearMonth, snapshot: EvaluationSnapshot, onDayClick
 private fun DayCell(date: LocalDate, snapshot: EvaluationSnapshot, onDayClick: (LocalDate) -> Unit) {
     val colors = LocalPhaseColors.current
     val evaluation = snapshot.evaluationFor(date)
-    val phase = if (date <= snapshot.today) evaluation?.phaseOn(date) else null
+    // F-47: future days show the forecast, clearly marked as such.
+    val forecastDay = if (date > snapshot.today) snapshot.forecast?.dayOn(date) else null
+    val forecast = forecastDay != null
+    val phase = if (date <= snapshot.today) evaluation?.phaseOn(date)?.phase else forecastDay?.phase
     val entry = snapshot.entries[date]
     val isPeriodStart = snapshot.cycles.any { it.startDate == date }
-    val fertile = phase?.phase == Phase.FERTILE
-    val background = when (phase?.phase) {
+    val fertile = phase == Phase.FERTILE
+    val alpha = if (forecast) FORECAST_ALPHA else 1f
+    val background = when (phase) {
         null -> MaterialTheme.colorScheme.surface
-        Phase.FERTILE -> colors.fertile
-        else -> colors.infertile
+        Phase.FERTILE -> colors.fertile.copy(alpha = alpha)
+        else -> colors.infertile.copy(alpha = alpha)
     }
     val phaseText = phase?.let {
         stringResource(
-            when (it.phase) {
+            when (it) {
                 Phase.INFERTILE_START -> R.string.phase_infertile_start
                 Phase.FERTILE -> R.string.phase_fertile
                 Phase.INFERTILE_END -> R.string.phase_infertile_end
             },
         )
     }
-    val description = listOfNotNull(Formats.dateMedium(date), phaseText).joinToString(", ")
+    val description = listOfNotNull(
+        Formats.dateMedium(date),
+        phaseText,
+        if (forecast) stringResource(R.string.phase_forecast_suffix) else null,
+        if (forecastDay?.expectedPeriod == true) stringResource(R.string.forecast_expected_period) else null,
+    ).joinToString(", ")
     val clickable = date <= snapshot.today
+    val shape = RoundedCornerShape(10.dp)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(10.dp))
+            .clip(shape)
             .background(background)
-            .then(if (fertile) Modifier.hatched(colors.fertileHatch.copy(alpha = 0.35f), spacing = 10f) else Modifier)
             .then(
-                if (date == snapshot.today) {
-                    Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                if (fertile) {
+                    Modifier.hatched(colors.fertileHatch.copy(alpha = 0.35f * alpha), spacing = 10f)
                 } else {
                     Modifier
+                },
+            )
+            .then(
+                when {
+                    date == snapshot.today -> Modifier.border(3.dp, colors.todayOutline, shape)
+                    forecastDay?.expectedPeriod == true -> Modifier.border(
+                        2.dp,
+                        colors.bleeding.copy(alpha = 0.7f),
+                        shape,
+                    )
+                    else -> Modifier
                 },
             )
             .then(if (clickable) Modifier.clickable { onDayClick(date) } else Modifier)
@@ -247,18 +269,21 @@ private fun DayCell(date: LocalDate, snapshot: EvaluationSnapshot, onDayClick: (
                 .align(Alignment.TopStart)
                 .padding(4.dp),
             style = MaterialTheme.typography.labelLarge,
-            fontWeight = if (isPeriodStart) FontWeight.Bold else FontWeight.Normal,
-            color = if (fertile) colors.onFertile else MaterialTheme.colorScheme.onSurface,
+            fontWeight = if (isPeriodStart || date == snapshot.today) FontWeight.Bold else FontWeight.Normal,
+            color = (if (fertile) colors.onFertile else MaterialTheme.colorScheme.onSurface)
+                .copy(alpha = if (forecast) FORECAST_TEXT_ALPHA else 1f),
         )
-        // Phase letter (N-05: not only color).
+        // Phase letter (N-05: not only color); "?" marks the forecast.
         if (phase != null) {
             Text(
-                stringResource(if (fertile) R.string.chart_fertile_short else R.string.chart_infertile_short),
+                stringResource(if (fertile) R.string.chart_fertile_short else R.string.chart_infertile_short) +
+                    if (forecast) "?" else "",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(4.dp),
                 style = MaterialTheme.typography.labelSmall,
-                color = if (fertile) colors.onFertile else colors.onInfertile,
+                color = (if (fertile) colors.onFertile else colors.onInfertile)
+                    .copy(alpha = if (forecast) FORECAST_TEXT_ALPHA else 1f),
             )
         }
         Row(
@@ -298,3 +323,5 @@ private fun Legend() {
 }
 
 private const val DAYS_PER_WEEK = 7
+private const val FORECAST_ALPHA = 0.45f
+private const val FORECAST_TEXT_ALPHA = 0.7f

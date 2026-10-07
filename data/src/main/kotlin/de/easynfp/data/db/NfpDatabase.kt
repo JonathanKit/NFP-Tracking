@@ -34,13 +34,17 @@ abstract class NfpDatabase : RoomDatabase() {
     abstract fun disturbanceDao(): DisturbanceDao
 
     companion object {
-        const val VERSION = 1
+        const val VERSION = 2
         const val NAME = "easynfp.db"
+
+        /** Separate database of the demo mode; the real data is never touched by it. */
+        const val DEMO_NAME = "easynfp-demo.db"
 
         fun build(context: Context, name: String? = NAME): NfpDatabase {
             val builder = if (name == null) {
                 Room.inMemoryDatabaseBuilder(context, NfpDatabase::class.java)
             } else {
+                DatabaseSafety.copyBeforeMigration(context, name, VERSION)
                 Room.databaseBuilder(context, NfpDatabase::class.java, name)
             }
             return builder

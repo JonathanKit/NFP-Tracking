@@ -7,6 +7,7 @@ import de.easynfp.rules.TestCycles.TYPICAL_TEMPS
 import de.easynfp.rules.model.Bleeding
 import de.easynfp.rules.model.CycleBuilder
 import de.easynfp.rules.model.CycleStart
+import de.easynfp.rules.statistics.CycleForecaster
 import de.easynfp.rules.statistics.CycleStatistics
 import de.easynfp.rules.statistics.NumberSummary
 import de.easynfp.rules.statistics.PeriodForecaster
@@ -62,6 +63,66 @@ class StatisticsTest {
         assertEquals(30, forecast.longestCycle)
         assertEquals(START.plusDays(26), forecast.earliest)
         assertEquals(START.plusDays(30), forecast.latest)
+    }
+
+    @Test
+    fun `F-47 forecast continues the current cycle and the following ones`() {
+        val evaluations = typicalCycles(4, currentDay = 10)
+        val current = evaluations.last()
+        val today = current.cycle.dateOf(10)
+        val forecast = assertNotNull(CycleForecaster.forecast(evaluations, today))
+        assertEquals(28, forecast.cycleLength)
+        assertEquals(5, forecast.periodDays)
+        assertEquals(3, forecast.basedOnCycles)
+        assertEquals(current.cycle.dateOf(29), forecast.nextPeriodStart)
+        assertEquals(28, forecast.currentCycleLength(current.cycle.startDate))
+        // Today and the past are never forecast.
+        assertNull(forecast.dayOn(today))
+        assertNull(forecast.dayOn(current.cycle.dateOf(3)))
+        // Current cycle: fertile until the evening of day 18 as in the past cycles.
+        assertEquals(Phase.FERTILE, forecast.dayOn(current.cycle.dateOf(11))?.phase)
+        assertTrue(forecast.dayOn(current.cycle.dateOf(18))?.infertileFromEvening == true)
+        assertEquals(Phase.INFERTILE_END, forecast.dayOn(current.cycle.dateOf(19))?.phase)
+        // Next cycle: period, five-day rule, fertile time, infertile time.
+        val next = { day: Int -> assertNotNull(forecast.dayOn(forecast.nextPeriodStart.plusDays(day - 1L))) }
+        assertTrue(next(1).expectedPeriod)
+        assertEquals(1, next(1).cycleDay)
+        assertEquals(Phase.INFERTILE_START, next(5).phase)
+        assertTrue(next(5).expectedPeriod)
+        assertFalse(next(6).expectedPeriod)
+        assertEquals(Phase.FERTILE, next(6).phase)
+        assertEquals(Phase.INFERTILE_END, next(19).phase)
+        assertEquals(forecast.nextPeriodStart.plusDays(28), next(28).date.plusDays(1))
+        assertNull(forecast.dayOn(today.plusDays(CycleForecaster.DEFAULT_HORIZON_DAYS + 1L)))
+    }
+
+    @Test
+    fun `F-47 forecast stays fertile when the usual evaluation day passed without evaluation`() {
+        val evaluations = typicalCycles(3, currentDay = 20)
+        val current = evaluations.last()
+        // Remove the higher measurements of the current cycle: it is not evaluated on day 20.
+        val unevaluated = SensiplanEngine.evaluate(
+            CycleBuilder.build(
+                evaluations.map { CycleStart(it.cycle.startDate) },
+                evaluations.flatMap { evaluation ->
+                    evaluation.cycle.observations.filterNot {
+                        evaluation === current && it.date > current.cycle.dateOf(14)
+                    }
+                },
+            ),
+            current.cycle.dateOf(20),
+        )
+        val forecast = assertNotNull(CycleForecaster.forecast(unevaluated, current.cycle.dateOf(20)))
+        assertEquals(Phase.FERTILE, forecast.dayOn(current.cycle.dateOf(25))?.phase)
+    }
+
+    @Test
+    fun `F-47 no forecast without a completed cycle`() {
+        val evaluations = typicalCycles(1, currentDay = 10)
+        assertNull(CycleForecaster.forecast(evaluations, evaluations.last().cycle.dateOf(10)))
+        // Cycles excluded from statistics (F-46) are not used.
+        val more = typicalCycles(3, currentDay = 10)
+        assertNull(CycleForecaster.forecast(more, more.last().cycle.dateOf(10), countsForStatistics = { false }))
     }
 
     @Test

@@ -49,6 +49,12 @@ public data class BackupDay(
     val breastSymptom: Boolean = false,
     val note: String? = null,
     val disturbanceIds: List<Long> = emptyList(),
+    /** Format version 2 (F-16): intensities `LIGHT`, `MEDIUM`, `HEAVY`; null = not present. */
+    val otherBleeding: String? = null,
+    val cramps: String? = null,
+    val nausea: String? = null,
+    val diarrhea: Boolean = false,
+    val vomiting: Boolean = false,
 )
 
 @Serializable

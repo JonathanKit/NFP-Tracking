@@ -14,6 +14,9 @@ import java.time.LocalTime
 /** F-14 */
 enum class Intercourse { PROTECTED, UNPROTECTED }
 
+/** F-16: strength of a symptom or of a bleeding outside the period. "Not present" is stored as null. */
+enum class Intensity { LIGHT, MEDIUM, HEAVY }
+
 /** F-10: disturbances that exist from the first start. [code] is stored, the label comes from resources. */
 enum class PredefinedDisturbance(val code: String) {
     SHORT_SLEEP("SHORT_SLEEP"),
@@ -27,7 +30,7 @@ enum class PredefinedDisturbance(val code: String) {
     OTHER_THERMOMETER("OTHER_THERMOMETER"),
 }
 
-/** Everything recorded for one day (F-01 to F-14). */
+/** Everything recorded for one day (F-01 to F-16). */
 data class DayEntry(
     val date: LocalDate,
     val temperature: Temperature? = null,
@@ -35,10 +38,18 @@ data class DayEntry(
     val temperatureExcluded: Boolean = false,
     val mucusSensation: MucusSensation? = null,
     val mucusAppearance: MucusAppearance? = null,
+    /** F-07: period bleeding (shown as "Periode"). */
     val bleeding: Bleeding? = null,
     val intercourse: Intercourse? = null,
     val mittelschmerz: Boolean = false,
     val breastSymptom: Boolean = false,
+    /** F-16: bleeding outside the period. Not used by the rules. */
+    val otherBleeding: Intensity? = null,
+    /** F-16 */
+    val cramps: Intensity? = null,
+    val nausea: Intensity? = null,
+    val diarrhea: Boolean = false,
+    val vomiting: Boolean = false,
     val note: String? = null,
     val disturbanceIds: Set<Long> = emptySet(),
 ) {
@@ -46,10 +57,14 @@ data class DayEntry(
 
     val hasMucusEntry: Boolean get() = mucusSensation != null || mucusAppearance != null
 
+    /** F-16 */
+    val hasSymptoms: Boolean
+        get() = otherBleeding != null || cramps != null || nausea != null || diarrhea || vomiting
+
     /** True if nothing is recorded, so the entry can be deleted instead of stored. */
     val isEmpty: Boolean
         get() = temperature == null && !hasMucusEntry && bleeding == null && intercourse == null &&
-            !mittelschmerz && !breastSymptom && note.isNullOrBlank() && disturbanceIds.isEmpty()
+            !mittelschmerz && !breastSymptom && !hasSymptoms && note.isNullOrBlank() && disturbanceIds.isEmpty()
 
     fun toObservation(): DayObservation = DayObservation(
         date = date,

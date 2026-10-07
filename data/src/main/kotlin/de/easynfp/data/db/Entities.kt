@@ -1,9 +1,11 @@
 package de.easynfp.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.Intercourse
 import de.easynfp.rules.model.Bleeding
 import de.easynfp.rules.model.MucusAppearance
@@ -26,6 +28,12 @@ data class DayEntryEntity(
     val note: String?,
     /** Epoch milliseconds of the last change. */
     val updatedAt: Long,
+    /** Version 2 (F-16). */
+    val otherBleeding: Intensity? = null,
+    val cramps: Intensity? = null,
+    val nausea: Intensity? = null,
+    @ColumnInfo(defaultValue = "0") val diarrhea: Boolean = false,
+    @ColumnInfo(defaultValue = "0") val vomiting: Boolean = false,
 )
 
 @Entity(tableName = "cycles")

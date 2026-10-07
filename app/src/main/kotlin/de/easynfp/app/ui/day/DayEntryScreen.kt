@@ -53,6 +53,8 @@ import de.easynfp.app.ui.components.TemperatureWheel
 import de.easynfp.app.ui.components.TimePickerDialogFor
 import de.easynfp.app.ui.components.appViewModelFactory
 import de.easynfp.app.ui.navigation.AppNavigator
+import de.easynfp.data.model.DayEntry
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.Intercourse
 import de.easynfp.data.settings.AppSettings
 import de.easynfp.rules.model.Bleeding
@@ -169,6 +171,7 @@ fun DayEntryContent(
         TemperatureSection(state, viewModel)
         MucusSection(draft.entry.mucusSensation, draft.entry.mucusAppearance, viewModel)
         BleedingSection(draft, viewModel)
+        SymptomSection(draft.entry, viewModel)
         DisturbanceSection(state, viewModel, onManage = onManageDisturbances)
         OptionalSection(settings, draft.entry, viewModel)
         SectionCard(title = stringResource(R.string.section_note)) {
@@ -244,7 +247,10 @@ private fun TemperatureSection(state: DayEntryUiState, viewModel: DayEntryAction
 private fun MucusSection(sensation: MucusSensation?, appearance: MucusAppearance?, viewModel: DayEntryActions) {
     val resources = LocalContext.current.resources
     SectionCard(title = stringResource(R.string.section_mucus)) {
-        Text(stringResource(R.string.mucus_best_hint), style = MaterialTheme.typography.bodySmall)
+        Text(
+            stringResource(R.string.mucus_best_hint) + " " + stringResource(R.string.mucus_scale_hint),
+            style = MaterialTheme.typography.bodySmall,
+        )
         Text(stringResource(R.string.mucus_sensation), fontWeight = FontWeight.Medium)
         ChoiceChips(
             options = MucusSensation.entries,
@@ -292,6 +298,49 @@ private fun BleedingSection(draft: DayDraft, viewModel: DayEntryActions) {
     }
 }
 
+/** F-16: bleeding outside the period and symptoms; none of it is used by the rules. */
+@Composable
+private fun SymptomSection(entry: DayEntry, viewModel: DayEntryActions) {
+    SectionCard(title = stringResource(R.string.section_symptoms)) {
+        IntensityRow(
+            title = stringResource(R.string.other_bleeding),
+            subtitle = stringResource(R.string.other_bleeding_hint),
+            value = entry.otherBleeding,
+            onChange = viewModel::setOtherBleeding,
+        )
+        IntensityRow(stringResource(R.string.symptom_cramps), value = entry.cramps, onChange = viewModel::setCramps)
+        IntensityRow(stringResource(R.string.symptom_nausea), value = entry.nausea, onChange = viewModel::setNausea)
+        SwitchRow(stringResource(R.string.symptom_diarrhea), entry.diarrhea, viewModel::setDiarrhea)
+        SwitchRow(stringResource(R.string.symptom_vomiting), entry.vomiting, viewModel::setVomiting)
+    }
+}
+
+/** "nicht, leicht, mittel, stark"; "nicht" stands for no value. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun IntensityRow(title: String, value: Intensity?, onChange: (Intensity?) -> Unit, subtitle: String? = null) {
+    val resources = LocalContext.current.resources
+    Column {
+        Text(title, fontWeight = FontWeight.Medium)
+        if (subtitle != null) {
+            Text(
+                subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf(null, Intensity.LIGHT, Intensity.MEDIUM, Intensity.HEAVY).forEach { option ->
+                FilterChip(
+                    selected = option == value,
+                    onClick = { onChange(option) },
+                    label = { Text(Formats.intensity(resources, option)) },
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DisturbanceSection(state: DayEntryUiState, viewModel: DayEntryActions, onManage: () -> Unit) {
@@ -312,7 +361,7 @@ private fun DisturbanceSection(state: DayEntryUiState, viewModel: DayEntryAction
 }
 
 @Composable
-private fun OptionalSection(settings: AppSettings, entry: de.easynfp.data.model.DayEntry, viewModel: DayEntryActions) {
+private fun OptionalSection(settings: AppSettings, entry: DayEntry, viewModel: DayEntryActions) {
     if (!settings.showIntercourse && !settings.showMittelschmerz && !settings.showBreastSymptom) return
     SectionCard(title = stringResource(R.string.section_optional)) {
         if (settings.showIntercourse) {

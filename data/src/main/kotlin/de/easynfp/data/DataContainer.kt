@@ -2,6 +2,7 @@ package de.easynfp.data
 
 import android.content.Context
 import de.easynfp.data.db.NfpDatabase
+import de.easynfp.data.demo.DemoMode
 import de.easynfp.data.settings.SettingsRepository
 import java.time.Clock
 
@@ -11,7 +12,10 @@ import java.time.Clock
  */
 class DataContainer private constructor(context: Context) {
     val clock: Clock = LiveClock
-    val database: NfpDatabase = NfpDatabase.build(context)
+
+    /** Demo mode: generated data in a separate database (see [DemoMode]). */
+    val isDemo: Boolean = DemoMode.isEnabled(context)
+    val database: NfpDatabase = NfpDatabase.build(context, if (isDemo) NfpDatabase.DEMO_NAME else NfpDatabase.NAME)
     val repository: NfpRepository = NfpRepository(database, clock)
     val evaluations: EvaluationRepository = EvaluationRepository(repository, clock)
     val settings: SettingsRepository = SettingsRepository(context)

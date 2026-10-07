@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -15,6 +16,7 @@ import de.easynfp.app.ui.day.DayEntryUiState
 import de.easynfp.app.ui.theme.EasyNfpTheme
 import de.easynfp.data.model.DayEntry
 import de.easynfp.data.model.Disturbance
+import de.easynfp.data.model.Intensity
 import de.easynfp.data.model.Intercourse
 import de.easynfp.data.model.PredefinedDisturbance
 import de.easynfp.data.settings.AppSettings
@@ -54,6 +56,11 @@ class DayEntryContentTest {
         override fun setIntercourse(value: Intercourse?) = edit { it.copy(intercourse = value) }
         override fun setMittelschmerz(value: Boolean) = edit { it.copy(mittelschmerz = value) }
         override fun setBreastSymptom(value: Boolean) = edit { it.copy(breastSymptom = value) }
+        override fun setOtherBleeding(value: Intensity?) = edit { it.copy(otherBleeding = value) }
+        override fun setCramps(value: Intensity?) = edit { it.copy(cramps = value) }
+        override fun setNausea(value: Intensity?) = edit { it.copy(nausea = value) }
+        override fun setDiarrhea(value: Boolean) = edit { it.copy(diarrhea = value) }
+        override fun setVomiting(value: Boolean) = edit { it.copy(vomiting = value) }
         override fun setNote(value: String) = edit { it.copy(note = value) }
         override fun setPeriodStart(value: Boolean) {
             draft = draft.copy(isPeriodStart = value)
@@ -100,7 +107,7 @@ class DayEntryContentTest {
         show(actions)
         compose.onNodeWithText("feucht").performScrollTo().performClick()
         compose.onNodeWithText("Kategorie f").performScrollTo()
-        compose.onNodeWithText("glasig, dehnbar, fadenziehend, flüssig").performScrollTo().performClick()
+        compose.onNodeWithText("dehnbar, fadenziehend").performScrollTo().performClick()
         compose.onNodeWithText("Kategorie S+").performScrollTo()
         assertEquals(MucusSensation.MOIST, actions.draft.entry.mucusSensation)
         assertEquals(MucusAppearance.CLEAR_STRETCHY, actions.draft.entry.mucusAppearance)
@@ -110,10 +117,29 @@ class DayEntryContentTest {
     fun `F-07 F-08 bleeding and period start`() {
         val actions = FakeActions(DayDraft(DayEntry(date), isPeriodStart = false))
         show(actions)
-        compose.onNodeWithText("stark").performScrollTo().performClick()
+        compose.onAllNodesWithText("stark")[0].performScrollTo().performClick()
         compose.onNodeWithText("Neue Periode beginnt an diesem Tag").performScrollTo().performClick()
         assertEquals(Bleeding.HEAVY, actions.draft.entry.bleeding)
         assertTrue(actions.draft.isPeriodStart)
+    }
+
+    @Test
+    fun `F-16 bleeding outside the period and symptoms`() {
+        val actions = FakeActions(DayDraft(DayEntry(date, cramps = Intensity.LIGHT), isPeriodStart = false))
+        show(actions)
+        compose.onNodeWithText("Blutung und Symptome").performScrollTo()
+        // Chip order per row: nicht, leicht, mittel, stark. Rows: Periode has no "nicht".
+        compose.onAllNodesWithText("mittel")[1].performScrollTo().performClick()
+        compose.onAllNodesWithText("nicht")[1].performScrollTo().performClick()
+        compose.onAllNodesWithText("stark")[3].performScrollTo().performClick()
+        compose.onNodeWithText("Durchfall").performScrollTo().performClick()
+        compose.onNodeWithText("Erbrechen").performScrollTo().performClick()
+        val entry = actions.draft.entry
+        assertEquals(Intensity.MEDIUM, entry.otherBleeding)
+        assertEquals(null, entry.cramps)
+        assertEquals(Intensity.HEAVY, entry.nausea)
+        assertTrue(entry.diarrhea && entry.vomiting)
+        assertEquals(null, entry.bleeding)
     }
 
     @Test
