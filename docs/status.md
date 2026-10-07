@@ -54,6 +54,13 @@ Heute, Tageseintrag (neue Schleimstufen, Periode, Blutung und Symptome speichern
 Zyklusblatt (Layout, Kreise, Hinterlegungen, Prognose, Legende), Kalender mit Prognose, Schnelleingabe
 (keine Helligkeitsänderung), Einstellungen, Demo-Modus ein/aus, Update von 1.0 (DB 1) auf 1.1 (DB 2) mit Daten.
 
+## Veröffentlichung
+
+Öffentliches Hobbyprojekt unter GPL-3.0, APK nur über GitHub-Releases (kein Play Store, keine
+Monetarisierung – Begründung: Medizinprodukterecht und Marke Sensiplan®). App-ID
+`io.github.jonathankit.easynfp`. Release-Ablauf: `docs/build-and-release.md`, Installationsanleitung:
+`docs/installation.md`, Hinweise für Beitragende: `CONTRIBUTING.md`, `SECURITY.md`.
+
 ## Offene Punkte
 
 - ⏳ Widget auf dem Homescreen von Hand prüfen (Tap → App, „Temperatur eintragen“ → Schnelleingabe);

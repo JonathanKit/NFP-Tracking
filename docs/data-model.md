@@ -83,7 +83,7 @@ App-Sperre) werden nicht in Sicherungen übernommen.
   nach `databases/easynfp.db.v<alte Version>.bak` (nur die letzte Kopie bleibt).
 - `android:hasFragileUserData="true"`: Android fragt beim Deinstallieren, ob die Daten behalten werden sollen.
 - Updates nur über die installierte App installieren, mit demselben Schlüssel und derselben Variante
-  (Debug `de.easynfp.debug` und Release `de.easynfp` sind getrennte Apps mit getrennten Daten).
+  (Debug `io.github.jonathankit.easynfp.debug` und Release `io.github.jonathankit.easynfp` sind getrennte Apps mit getrennten Daten).
 
 ## Sicherungsdatei (F-50)
 

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Installationshilfe
+    url: https://github.com/JonathanKit/NFP-Tracking/blob/main/docs/installation.md
+    about: Schritt-für-Schritt-Anleitung zum Installieren und Aktualisieren der App.
+  - name: Sicherheitslücke melden
+    url: https://github.com/JonathanKit/NFP-Tracking/security/advisories/new
+    about: Bitte vertraulich melden, nicht als öffentliches Issue.
+  - name: Fragen zur Methode
+    url: https://www.sensiplan.de
+    about: Zur symptothermalen Methode beraten ausgebildete Sensiplan-Beraterinnen, nicht dieses Projekt.

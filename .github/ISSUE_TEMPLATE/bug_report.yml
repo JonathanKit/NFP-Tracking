@@ -1,0 +1,55 @@
+name: Fehler melden
+description: Etwas funktioniert nicht oder die Auswertung wirkt falsch.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Issues sind öffentlich. Bitte keine echten Zyklusdaten, Screenshots mit echten Daten oder
+        Sicherungsdateien anhängen.** Für Fehler in der Auswertung den Demo-Modus nutzen
+        (Einstellungen → Demo-Modus) oder erfundene Werte angeben.
+        Sicherheitslücken bitte vertraulich melden (siehe SECURITY.md).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Bereich
+      options:
+        - Auswertung / Regelwerk
+        - Tageseintrag / Schnelleingabe
+        - Zyklusblatt / Kalender / Statistik
+        - Sicherung / Export
+        - Widget / Erinnerungen
+        - Installation / Update
+        - Sonstiges
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Was ist passiert, und was hättest du erwartet?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zum Nachstellen
+      description: Bei Auswertungsfehlern die beteiligten (erfundenen) Werte je Zyklustag, z. B. „Tag 14 36,45 °C, Schleim S+“.
+  - type: input
+    id: version
+    attributes:
+      label: App-Version
+      description: Steht unter Einstellungen, z. B. „Version 1.0.0 (42)“.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Handy und Android-Version
+      placeholder: z. B. Pixel 7, Android 15
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Datenschutz
+      options:
+        - label: Ich habe keine echten persönlichen Zyklus- oder Gesundheitsdaten angehängt.
+          required: true

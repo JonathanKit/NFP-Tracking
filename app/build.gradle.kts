@@ -26,7 +26,8 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "de.easynfp"
+        // Reverse domain of the GitHub account (io.github.jonathankit), so the ID is provably ours.
+        applicationId = "io.github.jonathankit.easynfp"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         // CI passes a monotonically increasing number so every APK can be installed as update.

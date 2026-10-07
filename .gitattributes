@@ -1,0 +1,11 @@
+# Line endings: LF in the repository and in the working copy (see .editorconfig), CRLF only for Windows scripts.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+*.jar binary
+*.keystore binary
+*.jks binary
+*.png binary
+*.webp binary
+*.pdf binary

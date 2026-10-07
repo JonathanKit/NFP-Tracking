@@ -80,6 +80,7 @@ empfohlen.
 - [Architektur](docs/architecture.md)
 - [Datenmodell](docs/data-model.md)
 - [Build und Release](docs/build-and-release.md) – Releases entstehen automatisch aus Git-Tags `v*`
+- [Mitmachen](CONTRIBUTING.md) und [Sicherheitslücken melden](SECURITY.md)
 
 ## Lizenz
 

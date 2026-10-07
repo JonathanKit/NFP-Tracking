@@ -1,0 +1,20 @@
+name: Idee vorschlagen
+description: Eine neue Funktion oder Verbesserung vorschlagen.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        easyNFP bleibt bewusst offline, werbefrei und ohne eigene Vorhersage-Heuristiken in der Auswertung.
+        Vorschläge, die das Regelwerk ändern, brauchen eine Quelle.
+  - type: textarea
+    id: idea
+    attributes:
+      label: Was wünschst du dir, und wofür?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Quelle (bei Regelwerk-Vorschlägen)
+      description: Wo ist die Regel beschrieben? Bitte keine längeren Zitate aus Büchern.

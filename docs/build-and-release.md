@@ -46,7 +46,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk   # -r = Update, Daten 
 Nie `adb uninstall` auf einem Handy mit echten Daten. Eine lokal gebaute APK hat `versionCode` 1; ist auf
 dem Handy schon eine CI-APK mit höherer Nummer, lehnt Android die Installation als Downgrade ab
 (Daten bleiben unberührt). Dann eine CI-APK verwenden oder `EASYNFP_VERSION_CODE` passend setzen.
-Debug- (`de.easynfp.debug`) und Release-APK (`de.easynfp`) sind getrennte Apps mit getrennten Daten.
+Debug- (`io.github.jonathankit.easynfp.debug`) und Release-APK (`io.github.jonathankit.easynfp`) sind getrennte Apps mit getrennten Daten.
 
 Zum Ausprobieren der Oberfläche mit vielen Daten: Einstellungen → Demo-Modus (eigene Datenbank).
 
@@ -59,7 +59,7 @@ Zum Ausprobieren der Oberfläche mit vielen Daten: Einstellungen → Demo-Modus 
 3. Prüfung, dass die APK keine `INTERNET`-Berechtigung anfordert (N-01)
 4. Debug-APK als Artefakt `easyNFP-debug-<Nummer>`
 
-Die Debug-APK hat die App-ID `de.easynfp.debug` und ist mit dem eingecheckten Debug-Schlüssel
+Die Debug-APK hat die App-ID `io.github.jonathankit.easynfp.debug` und ist mit dem eingecheckten Debug-Schlüssel
 (`app/debug.keystore`) signiert, damit neuere Test-Builds über ältere installiert werden können.
 Sie ist zum Ausprobieren gedacht; für die echte Nutzung die Release-APK verwenden.
 

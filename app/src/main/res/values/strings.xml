@@ -57,7 +57,7 @@
     <string name="todo_mucus_gap">Fehlende Schleimeinträge (%1$s) verhindern die Auswertung des Höhepunkts.</string>
     <string name="todo_new_cycle">Blutung nach der Hochlage: Beginnt heute eine neue Periode?</string>
     <string name="welcome_title">Willkommen bei easyNFP</string>
-    <string name="welcome_text">easyNFP ersetzt das Papier-Zyklusblatt: Du erfasst Temperatur, Zervixschleim und Blutung, die App wertet nach dem Sensiplan-Regelwerk aus und begründet jedes Ergebnis.\n\nWähle zuerst den ersten Tag deiner letzten Periode.</string>
+    <string name="welcome_text">easyNFP ersetzt das Papier-Zyklusblatt: Du erfasst Temperatur, Zervixschleim und Blutung, die App wendet die Regeln der symptothermalen Methode an und begründet jedes Ergebnis.\n\nWähle zuerst den ersten Tag deiner letzten Periode.</string>
     <string name="welcome_pick_period_start">Ersten Tag der letzten Periode wählen</string>
     <string name="disclaimer_short">easyNFP ist kein zertifiziertes Medizinprodukt. Prüfe jede Auswertung anhand der angezeigten Begründung selbst.</string>
     <string name="forecast_title">Nächste Periode (Schätzung)</string>
@@ -362,7 +362,7 @@
     <string name="data_deleted">Alle Daten wurden gelöscht.</string>
     <string name="about_title">Über easyNFP</string>
     <string name="about_disclaimer_title">Kein Medizinprodukt</string>
-    <string name="about_disclaimer_text">easyNFP ist kein zertifiziertes Medizinprodukt. Die App wertet nach dem Regelwerk der symptothermalen Methode Sensiplan aus und zeigt zu jedem Ergebnis, welche Regel mit welchen Tagen gegriffen hat, damit du es selbst prüfen kannst. Unklare Fälle wertet sie nicht aus – im Zweifel gilt ein Tag als fruchtbar.</string>
+    <string name="about_disclaimer_text">easyNFP ist ein privates Hobbyprojekt, kein Medizinprodukt und nicht zur Verhütung bestimmt. Die App wendet die veröffentlichten Regeln der symptothermalen Methode an (Sensiplan® der Malteser Arbeitsgruppe NFP; keine Verbindung zu den Maltesern) und zeigt zu jedem Ergebnis, welche Regel mit welchen Tagen gegriffen hat, damit du es selbst prüfen kannst. Unklare Fälle wertet sie nicht aus – im Zweifel gilt ein Tag als fruchtbar.</string>
     <string name="about_rules_title">Regelwerk</string>
     <string name="about_rules_text">Temperatur: 1. höhere Messung höher als die sechs vorangehenden gültigen Werte, Hilfslinie durch den höchsten dieser Werte; reguläre Regel und zwei Ausnahmeregeln. Schleim: Höhepunkt als letzter Tag der besten Qualität mit drei folgenden schlechteren Tagen. Unfruchtbar nach dem Eisprung ab dem Abend, an dem die zuletzt abgeschlossene der beiden Auswertungen endet. Zyklusanfang: 5-Tage-Regel bzw. Minus-8-Regel, jeweils nur nach einem ausgewerteten Vorzyklus; Schleim f, S oder S+ beendet die Phase sofort. Die Regeln mit ihren Nummern stehen in der Dokumentation (docs/rules.md).</string>
     <string name="about_privacy_title">Datenschutz</string>
