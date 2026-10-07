@@ -31,7 +31,8 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         // CI passes a monotonically increasing number so every APK can be installed as update.
         versionCode = providers.environmentVariable("EASYNFP_VERSION_CODE").orNull?.toInt() ?: 1
-        versionName = "1.0.0"
+        // Release builds from a tag v1.2.3 get versionName 1.2.3 (see docs/build-and-release.md).
+        versionName = providers.environmentVariable("EASYNFP_VERSION_NAME").orNull ?: "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
