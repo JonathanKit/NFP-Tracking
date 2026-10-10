@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_name">easyNFP</string>
-    <string name="widget_description">Zyklustag und heutiger Status. Tippen öffnet die App, „Temperatur eintragen“ direkt die Schnelleingabe.</string>
+    <string name="widget_description">Zyklustag und heutiger Status. Tippen öffnet die App.</string>
     <string name="widget_cycle_day">Zyklustag %1$d</string>
     <string name="widget_no_cycle">Noch kein Zyklus erfasst</string>
     <string name="widget_status_infertile_start">Unfruchtbar (Zyklusanfang)</string>
     <string name="widget_status_fertile">Fruchtbar</string>
     <string name="widget_status_fertile_until_evening">Ab heute Abend unfruchtbar</string>
     <string name="widget_status_infertile_end">Unfruchtbar</string>
-    <string name="widget_enter_temperature">Temperatur eintragen</string>
-    <string name="widget_temperature_today">Heute %1$s</string>
+    <string name="widget_open_app">Zum Öffnen tippen</string>
     <string name="widget_demo">Demo</string>
 </resources>

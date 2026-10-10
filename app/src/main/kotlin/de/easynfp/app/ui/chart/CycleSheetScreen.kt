@@ -244,7 +244,6 @@ private fun CycleHeader(
                     stringResource(
                         R.string.chart_forecast_next_period,
                         Formats.dateShort(resources, forecast.nextPeriodStart),
-                        forecast.basedOnCycles,
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

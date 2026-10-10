@@ -23,6 +23,10 @@
 
     <!-- Navigation -->
     <string name="nav_today">Heute</string>
+    <string name="greeting_morning">Guten Morgen ☀️</string>
+    <string name="greeting_day">Hallo 🌸</string>
+    <string name="greeting_evening">Guten Abend 🌙</string>
+    <string name="greeting_night">Gute Nacht ✨</string>
     <string name="nav_chart">Zyklusblatt</string>
     <string name="nav_calendar">Kalender</string>
     <string name="nav_statistics">Statistik</string>
@@ -60,13 +64,8 @@
     <string name="welcome_text">easyNFP ersetzt das Papier-Zyklusblatt: Du erfasst Temperatur, Zervixschleim und Blutung, die App wendet die Regeln der symptothermalen Methode an und begründet jedes Ergebnis.\n\nWähle zuerst den ersten Tag deiner letzten Periode.</string>
     <string name="welcome_pick_period_start">Ersten Tag der letzten Periode wählen</string>
     <string name="disclaimer_short">easyNFP ist kein zertifiziertes Medizinprodukt. Prüfe jede Auswertung anhand der angezeigten Begründung selbst.</string>
-    <string name="forecast_title">Nächste Periode (Schätzung)</string>
+    <string name="forecast_title">Nächste Periode</string>
     <string name="forecast_range">Voraussichtlich zwischen %1$s und %2$s</string>
-    <string name="forecast_disclaimer">Nur eine Planungshilfe aus vergangenen Zykluslängen, keine Aussage über fruchtbare oder unfruchtbare Tage.</string>
-    <plurals name="forecast_basis">
-        <item quantity="one">Aus %d Zyklus geschätzt.</item>
-        <item quantity="other">Aus %d Zyklen geschätzt.</item>
-    </plurals>
 
     <!-- Measuring hints (R-08) -->
     <string name="hints_title">Hinweise zum Messen</string>
@@ -190,10 +189,10 @@
     <string name="chart_coverline_short">HL</string>
     <string name="chart_legend_title">Legende</string>
     <string name="chart_legend_show">Legende anzeigen</string>
-    <string name="chart_legend">• Phase: U = unfruchtbar, F mit Schraffur = fruchtbar, ☾ = ab abends unfruchtbar. Unfruchtbare Tage sind zusätzlich über die ganze Höhe dezent hinterlegt.\n• Heute: kräftig umrandete Spalte.\n• Prognose: Tage nach heute mit „?“ und blasser Farbe (U? / F?). Sie ist nur eine Schätzung aus den bisherigen Zyklen und keine Auswertung nach dem Regelwerk. Gestrichelter Kreis in der Zeile Periode = erwartete Periode.\n• HL = Hilfslinie.\n• Kleine Zahlen 1–6 unter Punkten: Referenzwerte.\n• Eingekreiste Punkte mit Zahl darüber: höhere Messungen (durchgestrichen = zählt nicht). Die Spalte der 1. höheren Messung ist farbig hinterlegt.\n• Werte in Klammern sind ausgeklammert und nicht verbunden.\n• H 1 2 3 = Schleimhöhepunkt und Folgetage.\n• Periode: Kreisgröße nach Stärke, offener Kreis = Schmierblutung.\n• Tippe auf einen Tag, um ihn zu bearbeiten.</string>
+    <string name="chart_legend">• Phase: U = unfruchtbar, F mit Schraffur = fruchtbar, ☾ = ab abends unfruchtbar. Unfruchtbare Tage sind zusätzlich über die ganze Höhe dezent hinterlegt.\n• Heute: kräftig umrandete Spalte.\n• Prognose: blass mit „?“ (U? / F?), gestrichelter Kreis = erwartete Periode.\n• HL = Hilfslinie.\n• Kleine Zahlen 1–6 unter Punkten: Referenzwerte.\n• Eingekreiste Punkte mit Zahl darüber: höhere Messungen (durchgestrichen = zählt nicht). Die Spalte der 1. höheren Messung ist farbig hinterlegt.\n• Werte in Klammern sind ausgeklammert und nicht verbunden.\n• H 1 2 3 = Schleimhöhepunkt und Folgetage.\n• Periode: Kreisgröße nach Stärke, offener Kreis = Schmierblutung.\n• Tippe auf einen Tag, um ihn zu bearbeiten.</string>
     <string name="chart_today_label">Heute</string>
     <string name="chart_forecast_label">Prognose</string>
-    <string name="chart_forecast_next_period">Prognose: nächste Periode um den %1$s (geschätzt aus %2$d Zyklen)</string>
+    <string name="chart_forecast_next_period">Nächste Periode ≈ %1$s?</string>
     <string name="chart_options">Optionen</string>
     <string name="exclude_from_statistics">Von der Statistik ausschließen</string>
     <string name="exclude_from_statistics_hint">Zum Beispiel bei Krankheit. Die Auswertung nach dem Regelwerk bleibt unverändert.</string>
@@ -261,7 +260,7 @@
     <string name="explain_fertile_until_both">Fruchtbar, bis Temperatur und Schleim ausgewertet sind. Noch offen: %1$s.</string>
 
     <!-- Calendar -->
-    <string name="calendar_legend">U = unfruchtbar, F mit Schraffur = fruchtbar. Roter Punkt = Periode (klein: Schmierblutung), grauer Punkt = Eintrag vorhanden, fette Zahl = Periodenbeginn. Tippe auf einen Tag, um ihn zu bearbeiten.\nPrognose: Tage nach heute sind blass und mit „?“ markiert (U? / F?), roter Ring = erwartete Periode. Die Prognose ist nur eine Schätzung aus den bisherigen Zyklen, keine Auswertung.</string>
+    <string name="calendar_legend">U = unfruchtbar, F mit Schraffur = fruchtbar. Roter Punkt = Periode (klein: Schmierblutung), grauer Punkt = Eintrag vorhanden, fette Zahl = Periodenbeginn. Tippe auf einen Tag, um ihn zu bearbeiten. Blass mit „?“ = Prognose, roter Ring = erwartete Periode.</string>
     <string name="phase_forecast_suffix">(Prognose)</string>
     <string name="forecast_expected_period">Periode erwartet</string>
 
@@ -280,13 +279,29 @@
     <string name="stat_fertile_phase">Länge der fruchtbaren Zeit</string>
     <string name="stat_infertile_start">Unfruchtbare Tage am Anfang</string>
     <string name="stat_infertile_end">Unfruchtbare Tage am Ende</string>
-    <string name="stat_values">Ø %1$s Tage · %2$d–%3$d · Standardabweichung %4$s</string>
-    <string name="stat_values_earliest">Ø Tag %1$s · frühester Tag %2$d, spätester Tag %3$d · Standardabweichung %4$s</string>
     <string name="stat_no_data">Noch keine Daten</string>
     <string name="chart_cycle_lengths">Zykluslängen in Tagen</string>
     <string name="chart_first_higher_days">Tag der 1. höheren Messung</string>
     <string name="chart_min_max">Minimum %1$d · Maximum %2$d</string>
     <string name="chart_x_axis_cycles">Zyklus</string>
+    <string name="stat_intercourse_title">Geschlechtsverkehr</string>
+    <string name="stat_intercourse_current">aktueller Zyklus</string>
+    <string name="stat_intercourse_total">gewählte Zyklen</string>
+    <string name="stat_intercourse_mean">Ø pro Zyklus</string>
+    <string name="stat_intercourse_protected">geschützt %1$d</string>
+    <string name="stat_intercourse_unprotected">ungeschützt %1$d</string>
+    <string name="stat_intercourse_phase_start">unfruchtbar am Anfang %1$d</string>
+    <string name="stat_intercourse_phase_fertile">fruchtbar %1$d (ungeschützt %2$d)</string>
+    <string name="stat_intercourse_phase_end">unfruchtbar am Ende %1$d</string>
+    <string name="stat_typical_cycle">Dein typischer Zyklus</string>
+    <string name="stat_typical_cycle_length">Ø %1$s Tage</string>
+    <string name="stat_segment_infertile">unfruchtbar Ø %1$s</string>
+    <string name="stat_segment_fertile">fruchtbar Ø %1$s</string>
+    <string name="stat_segment_first_higher">1. höhere Messung Ø Tag %1$s</string>
+    <string name="stat_spread_title">Schwankung in Tagen</string>
+    <string name="stat_spread_legend">Linie: kürzester bis längster Wert · Balken: übliche Spanne · Punkt: Ø</string>
+    <string name="stat_intercourse_by_phase">Nach Phase</string>
+    <string name="chart_intercourse_per_cycle">Tage mit Geschlechtsverkehr je Zyklus</string>
     <string name="cycle_table_title">Zyklen</string>
     <string name="cycle_table_hint">Ausgeschaltete Zyklen zählen nicht für die Statistik und die Prognose.</string>
     <string name="cycle_table_row">Zyklus %1$d · ab %2$s</string>

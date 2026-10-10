@@ -2,7 +2,7 @@
 
 Offline-Android-App als digitales Zyklusblatt für die symptothermale Methode: Temperatur, Zervixschleim
 und Blutung erfassen, die Kurve sehen und nachvollziehen, welche Regel mit welchen Tagen greift.
-Die morgendliche Temperatureingabe dauert zwei Taps (Widget → Speichern).
+Die morgendliche Temperatureingabe dauert zwei Taps (Erinnerung → Speichern).
 
 ## Installation
 
@@ -36,12 +36,13 @@ Originalbuch und einer ausgebildeten Beraterin (siehe [Quellen](#regelwerk-quell
 - **Tageseintrag:** Temperatur per Zahlenrad (vorbelegt), Ausklammern, Zervixschleim in feinen Stufen
   (Empfinden + Aussehen → t/ø/f/S/S+), Periode, Periodenbeginn, Blutung und Symptome, Störfaktoren,
   optionale Felder, Notiz
-- **Schnelleingabe:** dunkel, vom Widget oder der Morgen-Erinnerung aus; die Helligkeit bleibt, wie sie ist
+- **Schnelleingabe:** dunkel, von der Morgen-Erinnerung oder „Heute“ aus; die Helligkeit bleibt, wie sie ist
+- **Widget:** klein, zeigt Zyklustag und Status, ein Tap öffnet die App
 - **Zyklusblatt:** Kurve mit Referenzwerten, Hilfslinie, eingekreisten höheren Messungen, Schleimhöhepunkt 1–2–3,
   Phasenband (Farbe + Muster + Buchstabe), Begründung, manuelle Übersteuerung, PDF-Export
 - **Prognose:** fruchtbare/unfruchtbare Tage und nächste Periode im Zyklusblatt und Kalender, klar als
   Schätzung („?“) vom ausgewerteten Teil getrennt
-- **Kalender** und **Statistik** (Zykluslängen, 1. höhere Messung, Phasenlängen, Diagramme)
+- **Kalender** und **Statistik** (Zykluslängen, 1. höhere Messung, Phasenlängen, Geschlechtsverkehr, Diagramme)
 - **Demo-Modus** zum Ausprobieren mit vielen erfundenen Zyklen, ohne die echten Daten anzufassen
 - **Daten:** verschlüsselte Sicherung, automatische Sicherung in einen Ordner, CSV-Export, App-Sperre
 - **Datenschutz:** keine Netzwerk-Berechtigung, keine Tracker, keine Werbung, kein Konto.
@@ -54,7 +55,7 @@ Temperatur und Zervixschleim) um, wie sie die Malteser Arbeitsgruppe NFP unter d
 beschreibt. Umsetzung und Regel-IDs: [docs/rules.md](docs/rules.md).
 
 - Malteser Arbeitsgruppe NFP: „Natürlich und sicher – Das Praxisbuch“ – das maßgebliche Werk
-- [Sensiplan-Übungsheft, Malteser Arbeitsgruppe NFP](https://sensiplan.profilschmiede.de/storage/media/documents/45/sensiplan-uebungsheft-web.pdf)
+- [Sensiplan-Übungsheft, Malteser Arbeitsgruppe NFP](https://www.sensiplan.de/produkte/natuerlich-und-sicher-das-praxisbuch)
 - [sensiplan.de](https://www.sensiplan.de) – Methode, Beratung und Kurse
 
 Sensiplan® ist eine Marke der Malteser Arbeitsgruppe NFP. easyNFP ist ein unabhängiges Projekt, steht in

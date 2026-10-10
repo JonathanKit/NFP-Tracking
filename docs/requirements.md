@@ -52,10 +52,10 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 
 | ID | Anforderung | Prio |
 | --- | --- | --- |
-| F-20 | Homescreen-Widget zeigt Zyklustag und den heutigen Status; ein Tap aufs Widget öffnet die App, ein Tap auf „Temperatur eintragen“ direkt die Temperatureingabe, Speichern schließt sie wieder | M |
+| F-20 | Kleines Homescreen-Widget (2 × 1, nur in der Breite veränderbar) zeigt nur Zyklustag und den heutigen Status; ein Tap aufs Widget öffnet die App. Keine Eingabe direkt aus dem Widget | M |
 | F-21 | Die Schnelleingabe speichert Wert und Uhrzeit des Speicherns in höchstens zwei Taps, wenn der Wert nahe am Vortag liegt | M |
 | F-22 | Dunkle Darstellung in der Schnelleingabe, unabhängig vom Systemmodus. Die Bildschirmhelligkeit wird nicht verändert (weder heller noch dunkler) | M |
-| F-23 | Tägliche Erinnerung zu einer einstellbaren Uhrzeit; Tap führt in die Schnelleingabe; entfällt, wenn schon eingetragen | S |
+| F-23 | Tägliche Erinnerung zu einer einstellbaren Uhrzeit; Tap führt in die Schnelleingabe; entfällt, wenn schon eingetragen. Die Schnelleingabe ist außerdem über „Temperatur eintragen“ auf „Heute“ erreichbar | S |
 | F-24 | Abend-Erinnerung für Zervixschleim, abschaltbar | S |
 
 ### 2.3 Zyklusblatt und Kalender
@@ -67,7 +67,7 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 | F-32 | Phasen als Farbband: unfruchtbar am Zyklusanfang, fruchtbar, unfruchtbar nach dem Eisprung; unfruchtbare Tage zusätzlich dezent über die ganze Kurvenhöhe hinterlegt | M |
 | F-33 | Tap auf einen Tag in der Kurve öffnet den Tageseintrag | M |
 | F-34 | Wischen wechselt zwischen Zyklen; horizontal scrollbar bei langen Zyklen | M |
-| F-35 | Monatskalender mit Blutung, Phasenfarbe und Markierung für eingetragene Tage; Tap öffnet den Tag | M |
+| F-35 | Monatskalender mit Blutung, Phasenfarbe und Markierung für eingetragene Tage; die Wochenzeilen nutzen die verfügbare Bildschirmhöhe; Tap öffnet den Tag | M |
 | F-36 | Startseite „Heute“: Zyklustag, aktueller Status in einem Satz, offene Einträge, Schnellzugriff | M |
 | F-37 | Zwei Zyklen übereinanderlegen zum Vergleich | K |
 
@@ -79,11 +79,12 @@ Priorität: M = Muss (Version 1), S = Soll (Version 1.x), K = Kann (später).
 | F-41 | Begründung in Klartext zu jedem Ergebnis, zum Beispiel: „Temperatur ausgewertet am Tag 17 nach der regulären Regel; Schleimhöhepunkt Tag 15; unfruchtbar ab Abend Tag 18“ | M |
 | F-42 | Manuelle Übersteuerung je Zyklus: Schleimhöhepunkt und erste höhere Messung selbst setzen; gekennzeichnet und rücknehmbar | S |
 | F-43 | Statistik über wählbaren Zeitraum: Zykluslänge (Mittel, Minimum, Maximum, Standardabweichung), Tag der ersten höheren Messung (Mittel, frühester, spätester), Länge der Hochlage, Länge der fruchtbaren Phase, unfruchtbare Tage am Anfang und am Ende | M |
-| F-44 | Diagramme: Zykluslängen und Tag der ersten höheren Messung über die Zeit | S |
-| F-45 | Prognose der nächsten Periode als Zeitspanne aus den bisherigen Zyklen, klar als Schätzung beschriftet und nie als Fruchtbarkeitsaussage | S |
+| F-44 | Statistik als Grafiken statt Textauswertung, wo sinnvoll: typischer Zyklus als Phasenbalken (Mittelwerte, Markierung der 1. höheren Messung), Schwankung aller Kennzahlen aus F-43 als Spannweiten (Minimum–Maximum, übliche Spanne, Mittelwert) auf einer gemeinsamen Tagesachse, Balkendiagramme für Zykluslängen und Tag der ersten höheren Messung über die Zeit | S |
+| F-45 | Prognose der nächsten Periode als Zeitspanne („voraussichtlich zwischen … und …“) aus den bisherigen Zyklen, nie als Fruchtbarkeitsaussage. Ohne erklärende Hinweistexte | S |
 | F-46 | Zyklen von der Statistik ausschließen (zum Beispiel krank, nicht auswertbar) | S |
-| F-47 | Prognose im Zyklusblatt und im Kalender: fruchtbare und unfruchtbare Tage sowie Zyklusende/nächste Periode für die kommenden Tage, aus den letzten Zyklen geschätzt. Auf ausdrücklichen Wunsch der Nutzerin, entgegen Abschnitt 5 („bewusst nicht empfohlen“). Prognosetage sind blass und mit „?“ markiert, der heutige Tag ist deutlich hervorgehoben, damit Prognose und Auswertung nicht verwechselt werden. Die Auswertung nach Abschnitt 3 bleibt davon unberührt | S |
+| F-47 | Prognose im Zyklusblatt und im Kalender: fruchtbare und unfruchtbare Tage sowie Zyklusende/nächste Periode für die kommenden Tage, aus den letzten Zyklen geschätzt. Auf ausdrücklichen Wunsch der Nutzerin, entgegen Abschnitt 5 („bewusst nicht empfohlen“). Prognosetage sind blass und mit „?“ markiert, der heutige Tag ist deutlich hervorgehoben, damit Prognose und Auswertung nicht verwechselt werden; erklärende Hinweistexte entfallen (Oktober 2026), die Legende nennt die Markierung knapp. Die Auswertung nach Abschnitt 3 bleibt davon unberührt | S |
 | F-48 | Demo-Modus in den Einstellungen: erfundene Daten (14 Zyklen) in einer eigenen Datenbank zum Ausprobieren der Oberfläche; echte Daten bleiben unverändert, automatische Sicherung ruht, deutlicher Hinweis „Demo-Modus“ auf jedem Bildschirm | S |
+| F-49 | Statistik zum Geschlechtsverkehr (nur wenn F-14 eingeschaltet): Tage im aktuellen Zyklus, Tage in den gewählten Zyklen und Mittel pro Zyklus, geschützt/ungeschützt, Verteilung auf die Phasen (unfruchtbar am Anfang, fruchtbar – davon ungeschützt –, unfruchtbar am Ende), Diagramm je Zyklus. Als Kennzahl-Kacheln und Balken dargestellt. Ändert keine Auswertung | S |
 
 ### 2.5 Daten
 
@@ -168,6 +169,7 @@ Maßgeblich ist die gelieferte Übersicht zum NFP-Regelwerk nach Sensiplan. Umse
 | N-10 | Android-Version: mindestens Android 9 (API 28), Ziel ist die jeweils aktuelle API |
 | N-11 | Verteilung: signierte APK zur direkten Installation; kein Play Store nötig. Der Signaturschlüssel wird gesichert, sonst sind spätere Updates nicht installierbar |
 | N-12 | Dokumentation im Repository: Architekturübersicht, Regelwerk mit IDs, Datenmodell, Anleitung für Build und Release |
+| N-13 | Gestaltung: fröhlich und freundlich, aber schlicht. Der Dunkelmodus bleibt dunkel (violett getönte Flächen) mit hellen Pastell-Akzenten (Pfirsich, Lavendel, Mint), runden Ecken, sanftem Farbverlauf in der Statuskarte und einer Begrüßung nach Tageszeit. Die Schnelleingabe bleibt gedämpft (F-22) |
 
 ## 5. Feature-Vorschläge
 
@@ -202,10 +204,14 @@ Details: `docs/architecture.md`.
 - Hormonelle Verhütung kürzlich: **nein** (R-37 nicht umgesetzt).
 - Minus-20-Regel: **nicht anbieten** (R-35 nicht umgesetzt).
 - Praxisbuch „Natürlich und sicher“: **liegt nicht vor** – R-16 umgesetzt wie vorgeschlagen; Abgleich steht aus.
-- Name und Farbwelt: **easyNFP**, simpel und modern.
+- Name und Farbwelt: **easyNFP**, simpel und modern; seit Oktober 2026 fröhlicher (N-13), weiter überwiegend dunkel.
 - Prognose fruchtbar/unfruchtbar und Zyklus (Oktober 2026): **gewünscht**, obwohl sie dem Regelwerk widerspricht →
   F-47, strikt getrennt von der Auswertung und deutlich als Prognose gekennzeichnet.
 - Feedback nach dem ersten Gerätetest (Oktober 2026): F-05, F-07, F-16, F-20, F-22, F-30 – F-32, F-47, F-48, N-07 angepasst.
+- Zweites Feedback (Oktober 2026): Widget wieder klein und nur zum Öffnen der App (F-20, kein Sprung in die
+  Temperatureingabe), fröhlichere Gestaltung (N-13), Statistik zum Geschlechtsverkehr (F-49).
+- Drittes Feedback (Oktober 2026): Widget nur eine Zeile hoch (F-20), Kalender höher (F-35), keine
+  Hinweistexte zur Prognose (F-45, F-47), Statistik als Grafiken (F-44, F-49).
 
 ## Quellen
 

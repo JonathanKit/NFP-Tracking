@@ -50,7 +50,7 @@ dieser Quelle installieren.“*
 ## Schritt 5: Einrichten
 
 - **Benachrichtigungen erlauben**, wenn die App fragt – sonst kommt die Morgen-Erinnerung nicht.
-- **Widget hinzufügen** für die schnelle Temperatureingabe: lange auf eine freie Stelle des Startbildschirms
+- **Widget hinzufügen**, um Zyklustag und Status auf einen Blick zu sehen: lange auf eine freie Stelle des Startbildschirms
   tippen → **Widgets** → **easyNFP** → auf den Startbildschirm ziehen.
 - **Sicherung einrichten:** Die Daten liegen nur auf dem Handy. Unter **Einstellungen → Datensicherung**
   eine Sicherung exportieren oder die automatische Sicherung einschalten, damit bei Verlust oder Defekt

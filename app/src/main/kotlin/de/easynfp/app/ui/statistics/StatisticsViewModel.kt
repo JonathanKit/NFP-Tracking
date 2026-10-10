@@ -35,13 +35,19 @@ data class StatisticsUiState(
     /** Completed cycles in the range, oldest first, including excluded ones (F-46). */
     val rows: List<CycleRow> = emptyList(),
     val forecast: PeriodForecast? = null,
+    /** F-49, null when intercourse is switched off in the settings (F-14). */
+    val intercourse: IntercourseSummary? = null,
 )
 
 class StatisticsViewModel(private val container: DataContainer) : ViewModel() {
     private val range = MutableStateFlow(StatisticsRange.LAST_12)
 
-    val state: StateFlow<StatisticsUiState> = combine(container.evaluations.snapshot, range) { snapshot, range ->
-        build(snapshot, range)
+    val state: StateFlow<StatisticsUiState> = combine(
+        container.evaluations.snapshot,
+        container.settings.settings,
+        range,
+    ) { snapshot, settings, range ->
+        build(snapshot, range, settings.showIntercourse)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), StatisticsUiState())
 
     fun setRange(value: StatisticsRange) {
@@ -57,7 +63,11 @@ class StatisticsViewModel(private val container: DataContainer) : ViewModel() {
         }
     }
 
-    private fun build(snapshot: EvaluationSnapshot, range: StatisticsRange): StatisticsUiState {
+    private fun build(
+        snapshot: EvaluationSnapshot,
+        range: StatisticsRange,
+        showIntercourse: Boolean,
+    ): StatisticsUiState {
         val completed = snapshot.evaluations.withIndex().filter { it.value.cycle.isCompleted }
         val selected = range.cycles?.let { completed.takeLast(it) } ?: completed
         val rows = selected.map { (index, evaluation) ->
@@ -68,12 +78,14 @@ class StatisticsViewModel(private val container: DataContainer) : ViewModel() {
                 excluded = snapshot.recordFor(evaluation)?.excludedFromStatistics == true,
             )
         }
+        val included = rows.filterNot { it.excluded }.map { it.evaluation }
         return StatisticsUiState(
             loading = false,
             range = range,
-            summary = CycleStatistics.summarize(rows.filterNot { it.excluded }.map { it.evaluation }),
+            summary = CycleStatistics.summarize(included),
             rows = rows,
             forecast = TodayViewModel.forecastFor(snapshot),
+            intercourse = if (showIntercourse) IntercourseStatistics.summarize(snapshot, included) else null,
         )
     }
 

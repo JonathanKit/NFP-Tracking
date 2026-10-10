@@ -45,7 +45,7 @@ import de.easynfp.rules.model.Temperature
 import java.time.LocalTime
 
 /**
- * F-20 to F-22: opened from the widget or the morning reminder. Dark and dim, independent of the
+ * F-21 to F-23: opened from the morning reminder or from "Heute". Dark and dim, independent of the
  * system theme, and closes itself after saving.
  */
 class QuickEntryActivity : FragmentActivity() {

@@ -16,19 +16,20 @@ Stand: nach Version 1.0.0 – Datenbank 2, Sicherungsformat 2. ✅ umgesetzt · 
 | F-14 | ✅ | in den Einstellungen abschaltbar |
 | F-15 | ➖ | Kann-Anforderung, später |
 | F-16 | ✅ | Abschnitt „Blutung und Symptome“, auch in Sicherung und CSV |
-| F-20 | ✅ | Glance-Widget: Tap öffnet die App, „Temperatur eintragen“ die Schnelleingabe |
-| F-21 | ✅ | Tap auf „Temperatur eintragen“ im Widget + „Speichern“ = 2 Taps |
+| F-20 | ✅ | Glance-Widget 2 × 1 (nur waagerecht veränderbar): Zyklustag + Status, Tap öffnet die App; keine Schnelleingabe mehr aus dem Widget |
+| F-21 | ✅ | Tap auf die Morgen-Erinnerung + „Speichern“ = 2 Taps |
 | F-22 | ✅ | eigenes dunkles Theme; Helligkeit bleibt unverändert |
 | F-23, F-24 | ✅ | AlarmManager, entfällt wenn eingetragen |
 | F-30 – F-34 | ✅ | `CycleChartRenderer`: Datum/Zyklustag oben, Kurve 30 % höher, Legende hinter „i“, höhere Messungen eingekreist, Spalte der 1. hM und unfruchtbare Tage hinterlegt |
-| F-35, F-36 | ✅ | |
+| F-35, F-36 | ✅ | Kalenderzeilen füllen die Höhe (`BoxWithConstraints`) |
 | F-37 | ➖ | Kann-Anforderung, später |
 | F-40, F-41 | ✅ | `EvaluationRepository`, `ExplanationFormatter` |
 | F-42 | ✅ | Zyklusblatt → „Manuelle Übersteuerung“ |
-| F-43, F-44, F-46 | ✅ | Statistik-Seite |
-| F-45 | ✅ | Spanne aus den letzten 6 Zyklen (mind. 3) |
+| F-43, F-44, F-46 | ✅ | Statistik-Seite: typischer Zyklus (Phasenbalken), Schwankung (Spannweiten), Balkendiagramme; Bausteine in `StatisticsCharts.kt` |
+| F-45 | ✅ | Spanne aus den letzten 6 Zyklen (mind. 3), ohne Hinweistext |
 | F-47 | ✅ | `CycleForecaster` (`:rules`, Statistik), im Zyklusblatt und Kalender (U?/F?, Ring = erwartete Periode) |
 | F-48 | ✅ | Einstellungen → Demo-Modus; eigene Datenbank `easynfp-demo.db`, App startet neu |
+| F-49 | ✅ | `IntercourseStatistics` (`:app`), Karte auf der Statistik-Seite; ausgeblendet, wenn F-14 abgeschaltet ist |
 | F-50 | ✅ | optional AES-256-GCM verschlüsselt |
 | F-51 | ✅ | WorkManager, unverschlüsselt (siehe architecture.md); ruht im Demo-Modus |
 | F-52 | ✅ | PDF A4 quer: Kurve + Begründung (ohne Prognose) |
@@ -46,6 +47,7 @@ Stand: nach Version 1.0.0 – Datenbank 2, Sicherungsformat 2. ✅ umgesetzt · 
 | N-10 | ✅ | minSdk 28, targetSdk 35 – beim Anheben siehe build-and-release.md |
 | N-11 | ✅ | Release-Signatur über Secrets, Anleitung in build-and-release.md |
 | N-12 | ✅ | `docs/` |
+| N-13 | ✅ | `Theme.kt`: Pfirsich/Lavendel/Mint auf violett getöntem Dunkel, runde Ecken, Verlauf in der Statuskarte, Begrüßung; noch nicht auf dem Gerät angesehen |
 
 ## Auf dem Gerät geprüft (Oktober 2026)
 
@@ -63,8 +65,8 @@ Monetarisierung – Begründung: Medizinprodukterecht und Marke Sensiplan®). Ap
 
 ## Offene Punkte
 
-- ⏳ Widget auf dem Homescreen von Hand prüfen (Tap → App, „Temperatur eintragen“ → Schnelleingabe);
-  per adb lässt sich kein Widget platzieren.
+- ⏳ Widget auf dem Homescreen von Hand prüfen (2 × 1, Tap → App); per adb lässt sich kein Widget platzieren.
+- ✅ Neue Farbwelt (N-13), Statistik-Grafiken und Kalender auf dem Gerät angesehen (Demo-Modus).
 - ⏳ Noch nicht auf dem Gerät durchgeklickt: Erinnerungen, App-Sperre, Sicherung exportieren/importieren,
   automatische Sicherung, PDF- und CSV-Export, Hellmodus, große Schrift, Android 9 (minSdk).
 - ⏳ Screenshot-Tests (Roborazzi) für das Zyklusblatt.

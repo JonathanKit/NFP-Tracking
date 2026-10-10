@@ -40,19 +40,14 @@
             </intent-filter>
         </activity>
 
-        <!-- F-20 to F-22: quick temperature entry, opened by widget and reminder. -->
+        <!-- F-21 to F-23: quick temperature entry, opened by the morning reminder and from "Heute". -->
         <activity
             android:name=".quickentry.QuickEntryActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTask"
             android:taskAffinity="de.easynfp.quickentry"
-            android:theme="@style/Theme.EasyNfp.QuickEntry">
-            <intent-filter>
-                <action android:name="de.easynfp.action.QUICK_ENTRY" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.EasyNfp.QuickEntry" />
 
         <receiver
             android:name=".reminders.ReminderReceiver"

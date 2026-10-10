@@ -6,11 +6,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -117,21 +119,27 @@ fun CalendarScreen(
                 .padding(padding),
         ) {
             HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 12.dp),
-                ) {
-                    MonthHeader(
-                        month = months[page],
-                        onPrevious = { scope.launch { pagerState.animateScrollToPage(page - 1) } },
-                        onNext = { scope.launch { pagerState.animateScrollToPage(page + 1) } },
-                        hasPrevious = page > 0,
-                        hasNext = page < months.lastIndex,
+                BoxWithConstraints {
+                    // Rows share the free height, so the month fills the screen (always room for six weeks).
+                    val rowHeight = ((maxHeight - CALENDAR_CHROME_HEIGHT.dp) / MAX_WEEKS).coerceAtLeast(
+                        MIN_ROW_HEIGHT.dp,
                     )
-                    MonthGrid(months[page], current, onDayClick = navigator::openDay)
-                    Legend()
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 12.dp),
+                    ) {
+                        MonthHeader(
+                            month = months[page],
+                            onPrevious = { scope.launch { pagerState.animateScrollToPage(page - 1) } },
+                            onNext = { scope.launch { pagerState.animateScrollToPage(page + 1) } },
+                            hasPrevious = page > 0,
+                            hasNext = page < months.lastIndex,
+                        )
+                        MonthGrid(months[page], current, rowHeight, onDayClick = navigator::openDay)
+                        Legend()
+                    }
                 }
             }
         }
@@ -170,7 +178,7 @@ private fun MonthHeader(
 }
 
 @Composable
-private fun MonthGrid(month: YearMonth, snapshot: EvaluationSnapshot, onDayClick: (LocalDate) -> Unit) {
+private fun MonthGrid(month: YearMonth, snapshot: EvaluationSnapshot, rowHeight: Dp, onDayClick: (LocalDate) -> Unit) {
     val locale = Locale.getDefault()
     val firstDayOfWeek = DayOfWeek.MONDAY
     Row(Modifier.fillMaxWidth()) {
@@ -192,7 +200,7 @@ private fun MonthGrid(month: YearMonth, snapshot: EvaluationSnapshot, onDayClick
                 Box(
                     Modifier
                         .weight(1f)
-                        .aspectRatio(1f)
+                        .height(rowHeight)
                         .padding(2.dp),
                 ) {
                     if (date != null) DayCell(date, snapshot, onDayClick)
@@ -323,5 +331,11 @@ private fun Legend() {
 }
 
 private const val DAYS_PER_WEEK = 7
+
+private const val MAX_WEEKS = 6
+
+// Month header, weekday row and legend.
+private const val CALENDAR_CHROME_HEIGHT = 190
+private const val MIN_ROW_HEIGHT = 52
 private const val FORECAST_ALPHA = 0.45f
 private const val FORECAST_TEXT_ALPHA = 0.7f

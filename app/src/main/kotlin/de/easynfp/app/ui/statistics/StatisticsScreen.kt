@@ -4,7 +4,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -25,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -41,8 +41,9 @@ import de.easynfp.app.ui.components.SectionCard
 import de.easynfp.app.ui.components.TopLevelScaffold
 import de.easynfp.app.ui.components.appViewModelFactory
 import de.easynfp.app.ui.navigation.AppNavigator
-import de.easynfp.rules.statistics.NumberSummary
-import java.util.Locale
+import de.easynfp.app.ui.theme.LocalPhaseColors
+import de.easynfp.app.ui.theme.barBrush
+import de.easynfp.rules.statistics.StatisticsSummary
 
 @Composable
 fun StatisticsScreen(
@@ -95,23 +96,8 @@ fun StatisticsScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                SectionCard {
-                    SummaryRow(stringResource(R.string.stat_cycle_length), summary.cycleLength)
-                    HorizontalDivider()
-                    SummaryRow(
-                        stringResource(R.string.stat_first_higher_day),
-                        summary.firstHigherDay,
-                        earliestLatest = true,
-                    )
-                    HorizontalDivider()
-                    SummaryRow(stringResource(R.string.stat_high_phase), summary.highPhaseLength)
-                    HorizontalDivider()
-                    SummaryRow(stringResource(R.string.stat_fertile_phase), summary.fertilePhaseLength)
-                    HorizontalDivider()
-                    SummaryRow(stringResource(R.string.stat_infertile_start), summary.infertileStartDays)
-                    HorizontalDivider()
-                    SummaryRow(stringResource(R.string.stat_infertile_end), summary.infertileEndDays)
-                }
+                TypicalCycleCard(summary)
+                SpreadCard(summary)
             }
 
             val included = state.rows.filterNot { it.excluded }
@@ -133,6 +119,8 @@ fun StatisticsScreen(
                 }
             }
 
+            state.intercourse?.let { IntercourseCard(it, included.map { row -> row.number.toString() }) }
+
             state.forecast?.let { forecast ->
                 val resources = LocalContext.current.resources
                 SectionCard(title = stringResource(R.string.forecast_title)) {
@@ -142,11 +130,6 @@ fun StatisticsScreen(
                             Formats.dateShort(resources, forecast.earliest),
                             Formats.dateShort(resources, forecast.latest),
                         ),
-                    )
-                    Text(
-                        stringResource(R.string.forecast_disclaimer),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -158,31 +141,154 @@ fun StatisticsScreen(
     }
 }
 
+/** Average cycle as one bar: infertile start, fertile, infertile end; marker = Ø 1st higher measurement. */
 @Composable
-private fun SummaryRow(label: String, summary: NumberSummary?, earliestLatest: Boolean = false) {
-    Column(Modifier.padding(vertical = 4.dp)) {
-        Text(label, style = MaterialTheme.typography.titleSmall)
-        if (summary == null) {
-            Text(stringResource(R.string.stat_no_data), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        } else {
-            val mean = String.format(Locale.getDefault(), "%.1f", summary.mean)
-            val sd = String.format(Locale.getDefault(), "%.1f", summary.standardDeviation)
+private fun TypicalCycleCard(summary: StatisticsSummary) {
+    val colors = LocalPhaseColors.current
+    val start = summary.infertileStartDays?.mean ?: 0.0
+    val fertile = summary.fertilePhaseLength?.mean ?: 0.0
+    val end = summary.infertileEndDays?.mean ?: 0.0
+    val hatch = colors.fertileHatch.copy(alpha = HATCH_ALPHA)
+    SectionCard(title = stringResource(R.string.stat_typical_cycle)) {
+        summary.cycleLength?.let {
             Text(
-                if (earliestLatest) {
-                    stringResource(R.string.stat_values_earliest, mean, summary.min, summary.max, sd)
-                } else {
-                    stringResource(R.string.stat_values, mean, summary.min, summary.max, sd)
-                },
-                style = MaterialTheme.typography.bodyMedium,
+                stringResource(R.string.stat_typical_cycle_length, it.mean.oneDecimal()),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        val segmentStart = stringResource(R.string.stat_segment_infertile, start.oneDecimal())
+        val segmentFertile = stringResource(R.string.stat_segment_fertile, fertile.oneDecimal())
+        val segmentEnd = stringResource(R.string.stat_segment_infertile, end.oneDecimal())
+        val firstHigher = summary.firstHigherDay?.let {
+            stringResource(R.string.stat_segment_first_higher, it.mean.oneDecimal())
+        }
+        SegmentBar(
+            segments = listOf(
+                Segment(start.toFloat(), colors.infertile),
+                Segment(fertile.toFloat(), colors.fertile, hatch),
+                Segment(end.toFloat(), colors.infertile),
+            ),
+            total = maxOf(start + fertile + end, summary.cycleLength?.mean ?: 0.0).toFloat(),
+            // Middle of the day column of the first higher measurement.
+            marker = summary.firstHigherDay?.mean?.toFloat()?.minus(HALF_DAY),
+            markerColor = colors.higher,
+            description = listOfNotNull(segmentStart, segmentFertile, segmentEnd, firstHigher).joinToString(", "),
+        )
+        Legend {
+            LegendItem(colors.infertile, segmentStart)
+            LegendItem(colors.fertile, segmentFertile, hatch)
+            LegendItem(colors.infertile, segmentEnd)
+            if (firstHigher != null) LegendItem(colors.higher, firstHigher)
+        }
+    }
+}
+
+/** F-43: spread of all figures on one shared day axis. */
+@Composable
+private fun SpreadCard(summary: StatisticsSummary) {
+    val noData = stringResource(R.string.stat_no_data)
+    val figures = listOf(
+        R.string.stat_cycle_length to summary.cycleLength,
+        R.string.stat_first_higher_day to summary.firstHigherDay,
+        R.string.stat_high_phase to summary.highPhaseLength,
+        R.string.stat_fertile_phase to summary.fertilePhaseLength,
+        R.string.stat_infertile_start to summary.infertileStartDays,
+        R.string.stat_infertile_end to summary.infertileEndDays,
+    )
+    val scaleMax = figures.maxOf { it.second?.max ?: 0 }
+    SectionCard(title = stringResource(R.string.stat_spread_title)) {
+        figures.forEach { (label, figure) -> RangeRow(stringResource(label), figure, scaleMax, noData) }
+        Text(
+            stringResource(R.string.stat_spread_legend),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/** F-49: how often and in which phase, in the selected cycles and the current one. */
+@Composable
+private fun IntercourseCard(summary: IntercourseSummary, labels: List<String>) {
+    val colors = LocalPhaseColors.current
+    val scheme = MaterialTheme.colorScheme
+    SectionCard(title = stringResource(R.string.stat_intercourse_title)) {
+        Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            summary.currentCycle?.let {
+                StatTile(
+                    it.toString(),
+                    stringResource(R.string.stat_intercourse_current),
+                    Modifier.weight(1f).fillMaxHeight(),
+                )
+            }
+            StatTile(
+                summary.totalDays.toString(),
+                stringResource(R.string.stat_intercourse_total),
+                Modifier.weight(1f).fillMaxHeight(),
+            )
+            StatTile(
+                summary.meanPerCycle.oneDecimal(),
+                stringResource(R.string.stat_intercourse_mean),
+                Modifier.weight(1f).fillMaxHeight(),
+            )
+        }
+        if (summary.totalDays == 0) return@SectionCard
+
+        val protectedText = stringResource(R.string.stat_intercourse_protected, summary.protectedDays)
+        val unprotectedText = stringResource(R.string.stat_intercourse_unprotected, summary.unprotectedDays)
+        SegmentBar(
+            segments = listOf(
+                Segment(summary.protectedDays.toFloat(), scheme.secondary),
+                Segment(summary.unprotectedDays.toFloat(), scheme.primary),
+            ),
+            description = "$protectedText, $unprotectedText",
+        )
+        Legend {
+            LegendItem(scheme.secondary, protectedText)
+            LegendItem(scheme.primary, unprotectedText)
+        }
+
+        val hatch = colors.fertileHatch.copy(alpha = HATCH_ALPHA)
+        val startText = stringResource(R.string.stat_intercourse_phase_start, summary.infertileStartDays)
+        val fertileText = stringResource(
+            R.string.stat_intercourse_phase_fertile,
+            summary.fertileDays,
+            summary.fertileUnprotectedDays,
+        )
+        val endText = stringResource(R.string.stat_intercourse_phase_end, summary.infertileEndDays)
+        Text(stringResource(R.string.stat_intercourse_by_phase), style = MaterialTheme.typography.titleSmall)
+        SegmentBar(
+            segments = listOf(
+                Segment(summary.infertileStartDays.toFloat(), colors.infertile),
+                Segment(summary.fertileDays.toFloat(), colors.fertile, hatch),
+                Segment(summary.infertileEndDays.toFloat(), colors.infertile),
+            ),
+            description = "$startText, $fertileText, $endText",
+        )
+        Legend {
+            LegendItem(colors.infertile, startText)
+            LegendItem(colors.fertile, fertileText, hatch)
+            LegendItem(colors.infertile, endText)
+        }
+
+        if (summary.perCycle.size >= 2) {
+            Text(stringResource(R.string.chart_intercourse_per_cycle), style = MaterialTheme.typography.titleSmall)
+            BarChart(
+                labels = labels,
+                values = summary.perCycle,
+                description = stringResource(R.string.chart_intercourse_per_cycle),
             )
         }
     }
 }
 
+private const val HALF_DAY = 0.5f
+
 /** Single-series bar chart: thin bars with rounded tops on a shared baseline, recessive grid. */
 @Composable
 private fun BarChart(labels: List<String>, values: List<Int?>, description: String) {
-    val barColor = MaterialTheme.colorScheme.primary
+    val barBrush = MaterialTheme.colorScheme.barBrush
     val gridColor = MaterialTheme.colorScheme.outlineVariant
     val textColor = MaterialTheme.colorScheme.onSurfaceVariant
     val present = values.filterNotNull()
@@ -218,14 +324,14 @@ private fun BarChart(labels: List<String>, values: List<Int?>, description: Stri
                 val height = size.height * value / top
                 val left = index * slot + (slot - barWidth) / 2
                 drawRoundRect(
-                    color = barColor,
+                    brush = barBrush,
                     topLeft = Offset(left, size.height - height),
                     size = Size(barWidth, height),
                     cornerRadius = CornerRadius(4.dp.toPx(), 4.dp.toPx()),
                 )
                 // Square off the bottom corners so bars sit on the baseline.
                 drawRect(
-                    color = barColor,
+                    brush = barBrush,
                     topLeft = Offset(left, size.height - minOf(height, 4.dp.toPx())),
                     size = Size(barWidth, minOf(height, 4.dp.toPx())),
                 )
@@ -293,7 +399,11 @@ private fun CycleTable(
                             ""
                         },
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (row.excluded) Color.Gray else MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = if (row.excluded) {
+                            MaterialTheme.colorScheme.outline
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                     )
                 }
                 Text(
@@ -308,4 +418,5 @@ private fun CycleTable(
 }
 
 private const val BAR_FRACTION = 0.6f
+private const val HATCH_ALPHA = 0.6f
 private const val BAR_MAX_WIDTH = 24

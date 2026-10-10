@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,10 +47,12 @@ import de.easynfp.app.ui.components.SectionCard
 import de.easynfp.app.ui.components.TopLevelScaffold
 import de.easynfp.app.ui.components.appViewModelFactory
 import de.easynfp.app.ui.navigation.AppNavigator
+import de.easynfp.app.ui.theme.highlightBrush
 import de.easynfp.data.EvaluationSnapshot
 import de.easynfp.rules.CycleEvaluation
 import de.easynfp.rules.Phase
 import de.easynfp.rules.statistics.PeriodForecast
+import java.time.LocalTime
 
 @Composable
 fun TodayScreen(
@@ -127,11 +128,20 @@ private fun StatusCard(snapshot: EvaluationSnapshot, current: CycleEvaluation, o
     val formatter = remember(context) { ExplanationFormatter(context.resources) }
     val cycleDay = current.cycle.cycleDayOf(snapshot.today)
     val phase = current.phaseOf(cycleDay)
-    SectionCard(containerColor = MaterialTheme.colorScheme.surfaceContainer) {
+    SectionCard(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        background = MaterialTheme.colorScheme.highlightBrush,
+    ) {
+        Text(
+            stringResource(greetingFor(LocalTime.now())),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Text(
             stringResource(R.string.cycle_day_large, cycleDay),
             style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
         )
         PhaseBadge(phase.phase, phase.infertileFromEvening)
         Text(statusSentence(current, cycleDay, phase.phase, phase.infertileFromEvening))
@@ -145,6 +155,19 @@ private fun StatusCard(snapshot: EvaluationSnapshot, current: CycleEvaluation, o
         }
     }
 }
+
+/** A friendly greeting matching the time of day. */
+private fun greetingFor(time: LocalTime): Int = when (time.hour) {
+    in MORNING_FROM until DAY_FROM -> R.string.greeting_morning
+    in DAY_FROM until EVENING_FROM -> R.string.greeting_day
+    in EVENING_FROM until NIGHT_FROM -> R.string.greeting_evening
+    else -> R.string.greeting_night
+}
+
+private const val MORNING_FROM = 5
+private const val DAY_FROM = 11
+private const val EVENING_FROM = 18
+private const val NIGHT_FROM = 23
 
 @Composable
 private fun statusSentence(current: CycleEvaluation, cycleDay: Int, phase: Phase, fromEvening: Boolean): String {
@@ -229,12 +252,6 @@ private fun ForecastCard(forecast: PeriodForecast) {
                 Formats.dateShort(context.resources, forecast.latest),
             ),
             style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            pluralStringResource(R.plurals.forecast_basis, forecast.basedOnCycles, forecast.basedOnCycles) + " " +
-                stringResource(R.string.forecast_disclaimer),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
